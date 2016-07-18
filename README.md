@@ -27,7 +27,7 @@ Abacus assumes that functions calls are **side effects free**, which means, if
 you called **foo** twice, within the same session and using the same arguments,
  you will get the same result no matter what foo actualy did. 
 Since you can plug your own functions, there is no way to enforce that rule 
-on your code, but if you are not careful in this respect, you may endup 
+on your code, but if you are not careful in this respect, you may end up 
 observing an odd behaviour in your app. 
 
 ```
@@ -44,13 +44,23 @@ int RemoveLastAndCount() {
 }
 ```
 
+### How to test
+```
+	//TODO:
+```
 
 
+### How to build
+```
+	//TODO:
+```
 
 
+### How to plug your own functions
+```
+	//TODO:
+```
 
 
-
-
-
-Is not working yet, stay tuned!
+### Important
+Abacus is not working yet, stay tuned!

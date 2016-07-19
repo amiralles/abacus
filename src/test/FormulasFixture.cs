@@ -1,6 +1,7 @@
 #pragma warning disable 414, 219
 namespace Abacus.Test {
 	using static Interpreter;
+	using static System.Console;
 	using _ = System.Action<Contest.Core.Runner>;
 
 
@@ -61,7 +62,19 @@ namespace Abacus.Test {
 			assert.Equal( 0d,    Eval(" 0 **  1"));
 		};
 
-		//TODO: Comparisons
+		_ basic_comparisons  = assert => {
+			var res = Eval("1 =  1");
+			WriteLine(res);
+			assert.IsTrue(Eval("1 =  1"));
+			// assert.IsTrue(Eval("2 <> 3"));
+			// assert.IsTrue(Eval("2 >  1"));
+			// assert.IsTrue(Eval("2 >= 1"));
+			// assert.IsTrue(Eval("2 >= 2"));
+			// assert.IsTrue(Eval("2 <= 3"));
+			// assert.IsTrue(Eval("3 <= 3"));
+			// assert.IsTrue(Eval("2 <  3"));
+		};
+
 		//TODO: And/Or/Not
 		//TODO: Op presedence
 	}

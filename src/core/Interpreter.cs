@@ -2,6 +2,7 @@
 namespace Abacus {
 	using System;
 	using System.Linq.Expressions;
+	using static System.Console;
 	using static System.Linq.Expressions.Expression;
 
 	public class Interpreter {
@@ -38,7 +39,12 @@ namespace Abacus {
 			catch(DivideByZeroException) {
 				return ERRDIV0;
 			}
-			catch(Exception) { //TODO: log..
+#if DEBUG
+			catch(Exception ex) {
+				WriteLine(ex.Message);
+#else
+			catch(Exception) {
+#endif
 				return ERR;
 			}
 		}

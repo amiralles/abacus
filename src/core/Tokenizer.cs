@@ -476,9 +476,7 @@ namespace Abacus {
         void DieUnkownToken() {
 #if DEBUG
 			var revStrm  = GetReversedStream();
-			var lastTkn  = revStrm.FirstOrDefault();
 			var dmp      = string.Join("\n", revStrm.Take(DMPLEN));
-			var dmplen   = DMPLEN < revStrm.Length ? DMPLEN : revStrm.Length;
 			var nextWord = PeekWord();
 
             Die($"Unknown token.\n" + 

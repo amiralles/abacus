@@ -25,11 +25,6 @@ namespace Abacus {
 		int _currPos       = -1,
 			_currLineNo    =  1;
 
-#if DEBUG
-		SyntaxTree _trackingTree;
-#endif
-		// Token _lastToken;
-
 		static readonly Dictionary<TK, BinOp>  _arithOps = 
 			new Dictionary<TK, BinOp> {
 				{ TK.Add,      BinOp.Add },
@@ -59,22 +54,10 @@ namespace Abacus {
 		}
 
 
-#if DEBUG
-		void TrackTree(ref SyntaxTree tree) {
-			_trackingTree = tree;
-		}
-#endif
-
 		public SyntaxTree Parse() {
 			var tree = new SyntaxTree();
-
-#if DEBUG
-			TrackTree(ref tree);
-#endif
-
 			while(!EOF)
 				tree.Add(ParseExpression());
-
 			return tree;
 		}
 
@@ -127,7 +110,7 @@ namespace Abacus {
 
 			var msg = $"Can't parse primary => {la}.";
 #if DEBUG
-			msg += "\n{DumpTokens()}"); 
+			msg += "\n{DumpTokens()}"; 
 #endif
 			Die(msg);
 			return null;
@@ -365,13 +348,12 @@ namespace Abacus {
 #if DEBUG
 
 		string DumpTokens(){
-			var strm = _stream.GetTokens();
-			var dmp = strm.Reverse();
+			var strm = _stream;
+			var dmp = strm.Reverse().ToArray();
 			if (dmp.Length == 0)
 				return "";
 
 			dmp = dmp.Take(DMP_STREAM_LEN).ToArray();
-			int len = dmp.Length > DMP_STREAM_LEN ? DMP_STREAM_LEN : dmp.Length;
 			var msg = "===================================\n";
 			msg += "DEBUG INFO\n";
 			msg += "===================================\n";

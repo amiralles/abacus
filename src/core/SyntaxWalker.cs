@@ -54,8 +54,8 @@ namespace Abacus {
         public Expression Walk(BinExpression expr) {
 
 			var op  = expr.Op;
-			var lhs = expr.Lhs.Accept(this);
-			var rhs = expr.Rhs.Accept(this);
+			var lhs = Dbl(expr.Lhs.Accept(this));
+			var rhs = Dbl(expr.Rhs.Accept(this));
 
 			switch(op) {
 				case Operator.Add:      return Add(lhs, rhs);

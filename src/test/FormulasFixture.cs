@@ -37,6 +37,8 @@ namespace Abacus.Test {
 			assert.Equal(-1.5,    Eval("-3 /  2"));
 			assert.Equal( 1.5,    Eval("+3 / +2"));
 			assert.Equal(ERRDIV0, Eval("+3 / 0"));
+			assert.Equal(ERRNAN,  Eval(" 0 / 0"));
+			assert.Equal(0d,      Eval(" 0 / 5"));
 
 			// mod
 			assert.Equal( 1d,    Eval(" 3 %  2"));
@@ -45,6 +47,7 @@ namespace Abacus.Test {
 			assert.Equal(-1d,    Eval("-3 %  2"));
 			assert.Equal( 1d,    Eval("+3 % +2"));
 			assert.Equal(ERRNAN, Eval("+3 % 0"));
+			assert.Equal(ERRNAN, Eval(" 0 % 0"));
 
 			// pow
 			assert.Equal( 8d,    Eval(" 2 **  3"));
@@ -53,6 +56,9 @@ namespace Abacus.Test {
 			assert.Equal(-8d,    Eval("-2 **  3"));
 			assert.Equal( 8d,    Eval("+2 ** +3"));
 			assert.Equal( 1d,    Eval("+2 **  0"));
+			assert.Equal( 0d,    Eval(" 0 **  2"));
+			assert.Equal( 1d,    Eval(" 0 **  0"));
+			assert.Equal( 0d,    Eval(" 0 **  1"));
 		};
 
 		//TODO: Comparisons

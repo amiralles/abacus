@@ -11,7 +11,7 @@ expression and that expression must be computed at run time. Common use cases
 formulas, and stuff like that. Places where is 
 better to let the user write a bit of logic or pull that logic out of config 
 files rather than stuff'em into your app's binaries. 
-You can look it as a small programming language that you can embed into your app.
+You can look it as a small programming language that can be embeded into your app.
 
 ### Can I integrate my app API into the scripting language?
 Of course, you can. That's one the places where Abacus outperforms solutions

@@ -6,7 +6,7 @@ __formulas__ and can be applied over reasonably large datasets
 
 ### What can I do with it?
 Basically, you can use it whenever you need to get a value out of an 
-expression and that expression must be computed at runtime. Common use cases
+expression and that expression must be computed at run time. Common use cases
  are conditional formatting, custom filters, allow users to write Excel alike 
 formulas on your app's data grids. And stuff like that. Places where is 
 better to let the user write a bit of logic or pull that logic out of config 

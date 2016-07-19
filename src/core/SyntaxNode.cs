@@ -34,7 +34,8 @@ namespace Abacus {
 		public abstract Expression Accept(SyntaxWalker walker);
 
 		protected Expression NotImplemented() {
-			throw new NotImplementedException();
+			throw new NotImplementedException(
+					$"Not Implemented Exception at {GetType().Name}.");
 		}
 	}
 
@@ -93,6 +94,16 @@ namespace Abacus {
 			=> NotImplemented();
 	}
 
+	// The easiest way to implement comparisons is to delegate all 
+	// calls to a single helper method that performs converts and
+	// comparisons. By doing that it's only a matter to check for:
+	// -1 lessThan
+	//  0 equal
+	//  1 greaterThan
+	//  Since we have a lot of implicit convertions (something like js) unless
+	//  performance states otherwise, all the operations will be solved by
+	//  the same method that will centralized convertions, coertions, and so
+	//  on and so forth.....
 	public class EqualExpression : SyntaxNode {
 		public readonly SyntaxNode Lhs, Rhs;
 

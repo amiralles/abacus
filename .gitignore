@@ -1,3 +1,4 @@
 *.swp
 *.swo
 *.config
+.contest_tmp

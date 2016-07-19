@@ -204,9 +204,9 @@ namespace Abacus {
 					return node;
 
 				if (op.Precedence >= precedence) {
-					ReadToken();
+					t = ReadToken();
 					var rhs = ParseExpression(op.Precedence + 1);
-					node = new BinaryExpression(op, node, rhs);
+					node = new BinExpression(op, node, rhs);
 				}
 				else {
 					return node;

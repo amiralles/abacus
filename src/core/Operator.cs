@@ -1,21 +1,26 @@
 namespace Abacus {
     public enum Operator {
+		// unary
         Pos,
         Neg,
+
+		// artihmetic
         Add,
         Sub,
         Multiply,
         Divide,
         Modulo,
-        Modulo2,
         Pow,
         FloorDiv, //DIV
+
+		// comparisons
         Equal,
         NotEqual,
         LessThan,
         LessThanOrEqual,
         GreaterThan,
         GreaterThanOrEqual,
+		// special case
         Concat
     }
 }

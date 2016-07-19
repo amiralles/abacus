@@ -40,19 +40,24 @@ namespace Abacus {
 
 	public class SyntaxTree : SyntaxNode { 
 		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
+			=> walker.Walk(this);
 	}
 
 	public class Const  : SyntaxNode {
+		public readonly object Val;
+		public readonly Type Type;
 
-		public Const(object val) : this (val, typeof(object)) {
+		public Const(object val) :
+		   	this (val, typeof(object)) {
 		}
 
 		public Const(object val, Type t) {
+			Val = val;
+			Type = t;
 		}
 
 		public override Expression Accept(SyntaxWalker walker) 
-			=> NotImplemented();
+			=> walker.Walk(this);
 
 	}
 
@@ -217,22 +222,23 @@ namespace Abacus {
 		}
 
 		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
+			=> walker.Walk(this);
 	}
 
-	public class BinaryExpression : SyntaxNode {
+	public class BinExpression : SyntaxNode {
 		public readonly Operator Op;
 		public readonly SyntaxNode Lhs, Rhs;
 
-		public BinaryExpression(
+		public BinExpression(
 				BinaryOperator op, SyntaxNode lhs, SyntaxNode rhs) {
 			DbgEnsureLhsRhs(lhs, rhs);
 			Lhs = lhs;
 			Rhs = rhs;
+			Op = op.Operator;
 		}
 
 		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
+			=> walker.Walk(this);
 	}
 
 	public class ParenExpression : SyntaxNode {

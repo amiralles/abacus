@@ -111,7 +111,6 @@ namespace Abacus {
 				DieUnkownToken();
 			}
 
-			_lastToken = token;
 			if (ppos == _currentPos)
 				DieCursorDidntMove();
 
@@ -211,10 +210,10 @@ namespace Abacus {
 		}
 
 		Token TokenizeUnaryOp() { 
-			if (PeekChar() == MIN && IsOTD(_lastToken))
+			if (PeekChar() == MIN && (_lastToken == null || IsOTD(_lastToken)))
 				return CreateToken(TK.UnaryMinus, ReadChar());
 
-			if (PeekChar() == PLS && IsOTD(_lastToken))
+			if (PeekChar() == PLS && (_lastToken == null || IsOTD(_lastToken)))
 				return CreateToken(TK.UnaryPlus, ReadChar());
 
 			return null;

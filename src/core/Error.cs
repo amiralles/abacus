@@ -3,7 +3,9 @@ namespace Abacus {
 	using System.Diagnostics;
 
 	public class Error {
-		public static void Die(string msg){
+		public static void Die(object msg) => Die(msg?.ToString() ?? "null");
+
+		public static void Die(string msg) {
 			throw new Exception(msg);
 		}
 	

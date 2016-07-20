@@ -7,19 +7,25 @@ namespace Abacus {
     using System.Linq.Expressions;
     using System.Reflection;
     using BF = System.Reflection.BindingFlags;
-    using static System.Linq.Expressions.Expression;
-    using static Abacus.Error;
-    using static System.String;
     using static System.Convert;
     using static System.Console;
+    using static System.Linq.Expressions.Expression;
+    using static System.Double;
+    using static System.String;
+    using static Abacus.Error;
+    using static Abacus.Assert;
 
 	//TODO: Explore different way to handle syntax errors. I think
 	//      for this particular component throwing exceptions
 	//      is not an option (performance wise).
     public class SyntaxWalker {
 		static readonly Type WALKER_TYPE = typeof(SyntaxWalker);
+
 		static readonly BF STAPRIVATE = 
 			BF.Static | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
+
+		static readonly BF PRIVATE = 
+			BF.Instance | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
 
 		static readonly MethodInfo POW = WALKER_TYPE.GetMethod(
 				"__Pow", STAPRIVATE);
@@ -33,10 +39,46 @@ namespace Abacus {
 		static readonly MethodInfo TOB = WALKER_TYPE.GetMethod(
 				"__ToBln", STAPRIVATE);
 
+		static readonly MethodInfo GET = WALKER_TYPE.GetMethod(
+				"__GetLocal", PRIVATE);
+
 		static readonly Expression 
 			MINUSONE = Constant(-1),
 			ZERO = Constant(0),
 			ONE = Constant(1);
+
+		// Points to the current instance of the walker.
+		readonly Expression THIS;
+
+		/// var names.
+		readonly string[] _localNames;
+
+		// In the future this field will be able to handle updates. This
+		// makes sense because most of the time we will be working on 
+		// tabular data with one header and many rows. (That's why localNames
+		// is inmutable). 
+		/// var values.
+		object[] _locals;
+
+		//TODO: pass locals.
+		public SyntaxWalker() {
+			THIS = Constant(this);
+
+			// Because we can reuse variable names and also whant lightweight
+			// structures we use two arrays instead of a dictionary.
+			_localNames = new [] {"null", "nan", "false", "true"};
+			_locals     = new object [] { null, NaN, false, true };
+			//
+		}
+
+		public void UpdateLocals(object[] locals) {
+			Ensure("locals", locals);
+
+			if (_locals.Length != locals.Length)
+				Die("Locals must be the same size.");
+
+			_locals = locals;
+		}
 		
 		/// Code generation entry point.
         public Expression Walk(SyntaxTree rootNode) {
@@ -53,6 +95,9 @@ namespace Abacus {
 				: res;
         }
 		
+        public Expression Walk(GetLocal expr)
+			=> Call(THIS, GET, Constant(expr.Name));
+
         public Expression Walk(UnaryExpression expr) {
 			var val = expr.Expr.Accept(this);
 			if (expr.Op == Operator.Neg)
@@ -118,6 +163,15 @@ namespace Abacus {
 		static double __Trunc(double num, double div)
 			=> Math.Truncate(num/div);
 
+		object __GetLocal(string name) {
+			var idx = Array.IndexOf(_localNames, name);
+			if (idx > -1)
+				return _locals[idx];
+
+			// Undefined variable.
+			return Interpreter.ERRNAME;
+		}
+
 		static bool __ToBln(object obj) {
 			if (obj == null)
 				return false;
@@ -134,17 +188,31 @@ namespace Abacus {
 			return ToBoolean(obj);
 		}
 
+		//TODO: Add strict comparison (something like JS).
 		static int __Cmp(object lhs, object rhs) {
+			DbgPrintCmp(lhs, rhs);
+
 			// As of now, strings are the only "special case" for comparisons,
 			// all the other types are converted to number and then compared
 			// to each other.
 			// (This may have to change if we extend the abaucs type system.
 			//  i.e. objects, arrays, etc....).
 			if (lhs is string) {
-				if (rhs is double && ((double)rhs) == 0)
+				if (
+					(rhs == null) ||
+					(rhs is bool   && !((bool)rhs)) ||
+					(rhs is double && (((double)rhs) ==0 || IsNaN((double)rhs)))
+					) {
 					rhs = "";
-				return string.Compare((string)lhs, Intern(rhs?.ToString()));
+				}
+
+				var lstr = (string)lhs;
+				if (IsNullOrEmpty(lstr))
+					lstr = "";
+
+				return string.Compare(lstr, rhs?.ToString());
 			}
+			// ===============================================================
 
 			if (lhs is DateTime)
 				lhs = ((DateTime)lhs).ToOADate();
@@ -155,13 +223,20 @@ namespace Abacus {
 			if (rhs is string && IsNullOrEmpty((string)rhs))
 				rhs = 0d;
 
-			DbgPrintCmp(lhs, rhs);
 
 			// Are we going to support multiple cultures?
 			// If so, we must to take that into account when converting values.
 			double lhd = ToDouble(lhs);
 			double rhd = ToDouble(rhs);
 
+			//NaN are also special cases. For comparison purposses
+			//zero and NaN are the same thing.
+			if (IsNaN(lhd) && rhd == 0d)
+				return 0;
+
+			if (IsNaN(rhd) && lhd == 0d)
+				return 0;
+			// ======================================
 			return lhd == rhd ? 0 : lhd < rhd ? -1 : 1;
 		}
 

@@ -59,18 +59,17 @@ namespace Abacus {
 
 		public override Expression Accept(SyntaxWalker walker) 
 			=> walker.Walk(this);
-
 	}
 
 	public class GetLocal  : SyntaxNode {
 		public readonly string Name;
 		public GetLocal(string name){
 			DbgDieIf(IsNullOrEmpty(name), "name can't be null or empty.");
-			Name = name;
+			Name = Intern(name);
 		}
 
 		public override Expression Accept(SyntaxWalker walker) 
-			=> NotImplemented();
+			=> walker.Walk(this);
 	}
 
 

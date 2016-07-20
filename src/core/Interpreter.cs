@@ -8,8 +8,13 @@ namespace Abacus {
 	public class Interpreter {
 		public static readonly double Infinity = double.PositiveInfinity;
 		public static readonly string 
+			/// Generic error.
 			ERR     = "#ERROR!", 
+			/// Value is not a number.
 			ERRNAN  = "#VALUE!", 
+			/// Trying to access an undefined variable.
+			ERRNAME = "#NAME!", 
+			/// Error division by zero.
 			ERRDIV0 = "#DIV!0";
 
 		// TODO: Add session (for caching purposes).

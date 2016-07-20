@@ -5,12 +5,25 @@ namespace Abacus {
 	using System.Linq;
 	using System.Collections.Generic;
 	using static System.Console;
+	using static System.String;
 	using static Abacus.Error;
 	using static Abacus.Assert;
 	using TK = Abacus.TokenKind;
 	using BinOp = Abacus.BinaryOperator;
 
 	public class Parser {
+		//============================================================
+		/// How many builtin locals do we have?
+		const int LOCBUILTINS = 4;
+
+		// If you add a locals here, update LOCBUILTINS accordingly.
+		const string
+			NULL  = "null",
+			NAN   = "nan",
+			FALSE = "false",
+			TRUE  = "true";
+		//============================================================
+
 #if DEBUG
 		const int DMP_STREAM_LEN = 20;
 		const int MAX_SAME_PEEK_COUNT = 300;
@@ -50,7 +63,23 @@ namespace Abacus {
 		public Parser(Tokenizer tokenizer, string[] locals) {
 			Ensure("tokenizer", tokenizer);
 			_stream = tokenizer.Tokenize();
-			_locals = locals;
+
+			if (locals != null) {
+				// builtins.
+				_locals = new string[LOCBUILTINS + locals.Length];
+				_locals[0] = NULL;
+				_locals[1] = NAN;
+				_locals[2] = FALSE;
+				_locals[3] = TRUE;
+
+				// user def.
+				for(int i = 0, j = LOCBUILTINS; i < locals.Length; ++i, ++j)
+					_locals[j] = locals[i];
+			}
+			else {
+				// builtins.
+				_locals = new string[] { NULL, NAN, FALSE, TRUE };
+			}
 		}
 
 
@@ -125,10 +154,11 @@ namespace Abacus {
 			var t = ReadToken(TK.StringLiteral);
 
 			// Empty string are like this: "''"
-			DbgDieIf(t.Text.Length < 2,
+			DbgDieIf(IsNullOrEmpty(t.Text) || t.Text.Length < 2,
 				   	"Internal error. String literal text too short.");
 			var str = t.Text.Substring(1, t.Text.Length - 2);
-			return new Const(str, typeof(string));
+
+			return new Const(Intern(str), typeof(string));
 		}
 
         SyntaxNode AddTrailers(SyntaxNode expr) {

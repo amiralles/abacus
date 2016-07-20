@@ -64,9 +64,6 @@ namespace Abacus.Test {
 
 		_ basic_comparisons = assert => {
 			assert.IsTrue(Eval("1 =  1"));
-			assert.IsTrue(Eval("0 = ''"));
-			assert.IsTrue(Eval("'' = ''"));
-			assert.IsTrue(Eval("'' = 0"));
 			assert.IsTrue(Eval("2 <> 3"));
 			assert.IsTrue(Eval("2 >  1"));
 			assert.IsTrue(Eval("2 >= 1"));
@@ -74,6 +71,7 @@ namespace Abacus.Test {
 			assert.IsTrue(Eval("2 <= 3"));
 			assert.IsTrue(Eval("3 <= 3"));
 			assert.IsTrue(Eval("2 <  3"));
+			assert.IsTrue(Eval("'' = ''"));
 
 			assert.IsFalse(Eval("2 =  1"));
 			assert.IsFalse(Eval("3 <> 3"));
@@ -83,6 +81,7 @@ namespace Abacus.Test {
 			assert.IsFalse(Eval("4 <= 3"));
 			assert.IsFalse(Eval("4 <= 3"));
 			assert.IsFalse(Eval("4 <  3"));
+
 		};
 
 		_ basic_logic = assert => {
@@ -105,6 +104,33 @@ namespace Abacus.Test {
 			assert.IsFalse(Eval("not 1=1"));
 			assert.IsTrue(Eval("not 1=0"));
 
+		};
+
+		_ equality_coercions_and_fun_with_casts = assert => {
+			assert.IsTrue(Eval("0 = ''"));
+			assert.IsTrue(Eval("0 = false"));
+			assert.IsTrue(Eval("0 = null"));
+			assert.IsTrue(Eval("0 = NaN"));
+
+			assert.IsTrue(Eval("NaN = false"));
+			assert.IsTrue(Eval("NaN = 0"));
+			assert.IsTrue(Eval("NaN = ''"));
+			assert.IsTrue(Eval("NaN = null"));
+
+			assert.IsTrue(Eval("'' = NaN"));
+			assert.IsTrue(Eval("'' = 0"));
+			assert.IsTrue(Eval("'' = false"));
+			assert.IsTrue(Eval("'' = null"));
+
+			assert.IsTrue(Eval("false = NaN"));
+			assert.IsTrue(Eval("false = ''"));
+			assert.IsTrue(Eval("false = 0"));
+			assert.IsTrue(Eval("false = null"));
+
+			assert.IsTrue(Eval("null = NaN"));
+			assert.IsTrue(Eval("null = false"));
+			assert.IsTrue(Eval("null = 0"));
+			assert.IsTrue(Eval("null = ''"));
 		};
 
 		//TODO: Access locals

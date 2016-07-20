@@ -423,6 +423,8 @@ namespace Abacus {
 			var t =	 new Token(text, kind, _endsAtColNo, _lineNo);
 #if DEBUG
 			DumpStream.Add(t);
+			DieIf(t.Kind == TK.Identifier && IsNullOrEmpty(t.Text),
+					"ID no puede ser null.");
 #endif
 			_lastToken = t;
 			return t;

@@ -11,6 +11,7 @@ namespace Abacus {
     using static Abacus.Error;
     using static System.String;
     using static System.Convert;
+    using static System.Console;
 
 	//TODO: Explore different way to handle syntax errors. I think
 	//      for this particular component throwing exceptions
@@ -148,12 +149,24 @@ namespace Abacus {
 			if (rhs is DateTime)
 				rhs = ((DateTime)rhs).ToOADate();
 
+			if (rhs is string && IsNullOrEmpty((string)rhs))
+				rhs = 0d;
+
+			DbgPrintCmp(lhs, rhs);
+
 			// Are we going to support multiple cultures?
 			// If so, we must to take that into account when converting values.
 			double lhd = ToDouble(lhs);
 			double rhd = ToDouble(rhs);
 
 			return lhd == rhd ? 0 : lhd < rhd ? -1 : 1;
+		}
+
+		static void DbgPrintCmp(object lhs, object rhs) {
+			WriteLine("========= cmp ========");
+			WriteLine($"lhs: {lhs}({lhs?.GetType()})");
+			WriteLine($"rhs: {rhs}({rhs?.GetType()})");
+			WriteLine("======================");
 		}
 		//}}}
 

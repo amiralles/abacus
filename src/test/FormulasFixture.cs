@@ -62,7 +62,7 @@ namespace Abacus.Test {
 			assert.Equal( 0d,    Eval(" 0 **  1"));
 		};
 
-		_ basic_comparisons  = assert => {
+		_ basic_comparisons = assert => {
 			assert.IsTrue(Eval("1 =  1"));
 			assert.IsTrue(Eval("2 <> 3"));
 			assert.IsTrue(Eval("2 >  1"));
@@ -71,12 +71,42 @@ namespace Abacus.Test {
 			assert.IsTrue(Eval("2 <= 3"));
 			assert.IsTrue(Eval("3 <= 3"));
 			assert.IsTrue(Eval("2 <  3"));
+
+			assert.IsFalse(Eval("2 =  1"));
+			assert.IsFalse(Eval("3 <> 3"));
+			assert.IsFalse(Eval("1 >  1"));
+			assert.IsFalse(Eval("0 >= 1"));
+			assert.IsFalse(Eval("1 >= 2"));
+			assert.IsFalse(Eval("4 <= 3"));
+			assert.IsFalse(Eval("4 <= 3"));
+			assert.IsFalse(Eval("4 <  3"));
 		};
 
-		//TODO: And/Or/Not
-		//TODO: Op presedence
-		//TODO: Function calls
+		_ basic_logic = assert => {
+			// And
+			assert.IsTrue(Eval("1 and 1"));
+			assert.IsTrue(Eval("1=1 and 2=2"));
+			assert.IsFalse(Eval("1=1 and 1=2"));
+			assert.IsFalse(Eval("1=2 and 1=1"));
+
+			// Or
+			assert.IsTrue(Eval("0 or 1"));
+			assert.IsTrue(Eval("1=1 or 1=2"));
+			assert.IsTrue(Eval("1=2 or 1=1"));
+			assert.IsTrue(Eval("1 or 0"));
+			assert.IsFalse(Eval("0 or 0"));
+
+			// Not
+			assert.IsTrue(Eval("not 0"));
+			assert.IsFalse(Eval("not 1"));
+			assert.IsFalse(Eval("not 1=1"));
+			assert.IsTrue(Eval("not 1=0"));
+
+		};
+
 		//TODO: Access locals
+		//TODO: Function calls
+		//TODO: Op presedence
 		//
 	}
 }

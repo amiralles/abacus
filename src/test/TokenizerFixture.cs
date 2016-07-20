@@ -5,6 +5,14 @@ namespace Abacus.Test {
 	using TK = Abacus.TokenKind;
 
 	class TokenizerFixture {
+
+		_ and_operator = assert => {
+			var tokenizer = new Tokenizer("1 and 1");
+			var stream = tokenizer.Tokenize();
+			assert.Equal(3, stream.Length);
+			assert.Equal(TK.And, stream[1].Kind);
+		};
+
 		_ should_ignore_white_space = assert => {
 			var tokenizer = new Tokenizer(" 2 +  3");
 			var stream = tokenizer.Tokenize();

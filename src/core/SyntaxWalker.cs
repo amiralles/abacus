@@ -29,6 +29,9 @@ namespace Abacus {
 		static readonly MethodInfo CMP = WALKER_TYPE.GetMethod(
 				"__Cmp", STAPRIVATE);
 
+		static readonly MethodInfo TOB = WALKER_TYPE.GetMethod(
+				"__ToBln", STAPRIVATE);
+
 		static readonly Expression 
 			MINUSONE = Constant(-1),
 			ZERO = Constant(0),
@@ -98,6 +101,14 @@ namespace Abacus {
         public Expression Walk(GreaterThanEqExpression expr)
 			=> GreaterThan(CallCmp(expr.Lhs, expr.Rhs), MINUSONE);
 
+        public Expression Walk(AndExpression expr)
+			=> And(Bln(expr.Lhs.Accept(this)), Bln(expr.Rhs.Accept(this)));
+
+        public Expression Walk(OrExpression expr)
+			=> Or(Bln(expr.Lhs.Accept(this)), Bln(expr.Rhs.Accept(this)));
+
+        public Expression Walk(NotExpression expr)
+			=> Not(Bln(expr.Expr.Accept(this)));
 
 		//RUNTIME HELPERS {{{
 		static double __Pow(double num, double pow) 
@@ -105,6 +116,22 @@ namespace Abacus {
 
 		static double __Trunc(double num, double div)
 			=> Math.Truncate(num/div);
+
+		static bool __ToBln(object obj) {
+			if (obj == null)
+				return false;
+
+			if (obj is bool)
+				return (bool)obj;
+
+			if (obj is string)
+				return !IsNullOrEmpty((string)obj);
+
+			if (obj is DateTime)
+				obj = ((DateTime)obj).ToOADate();
+
+			return ToBoolean(obj);
+		}
 
 		static int __Cmp(object lhs, object rhs) {
 			// As of now, strings are the only "special case" for comparisons,
@@ -146,6 +173,10 @@ namespace Abacus {
 			? Convert(expr, typeof(object))
 			: expr;
 
+		Expression Bln(Expression expr)
+			=> (expr.Type != typeof(bool))
+			? Call(null, TOB, Obj(expr))
+			: expr;
 
 		Expression CallCmp(SyntaxNode lhs, SyntaxNode rhs) 
 			=> Call(null, CMP, 

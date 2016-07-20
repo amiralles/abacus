@@ -42,10 +42,11 @@ namespace Abacus {
 #if DEBUG
 			catch(Exception ex) {
 				WriteLine(ex.Message);
+				throw;
 #else
 			catch(Exception) {
-#endif
 				return ERR;
+#endif
 			}
 		}
 

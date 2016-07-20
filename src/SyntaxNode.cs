@@ -135,7 +135,7 @@ namespace Abacus {
 		}
 
 		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
+			=> walker.Walk(this);
 	}
 
 

@@ -210,6 +210,9 @@ namespace Abacus {
 		}
 
 		Token TokenizeUnaryOp() { 
+			if (PeekWord() == NOT)  
+				return CreateToken(TK.Not, ReadWord());
+
 			if (PeekChar() == MIN && (_lastToken == null || IsOTD(_lastToken)))
 				return CreateToken(TK.UnaryMinus, ReadChar());
 
@@ -289,10 +292,15 @@ namespace Abacus {
 			if ((nextword = PeekWord()) == MOD1 || nextword == MOD2)
 				return CreateToken(TK.Mod, ReadWord());
 
+			if (nextword == AND)
+				return CreateToken(TK.And, ReadWord());
+
+			if (nextword == OR)
+				return CreateToken(TK.Or, ReadWord());
+
 			if (nextword == FDIV)
 				return CreateToken(TK.FloorDiv, ReadWord());
 
-			if (nextword == NOT)  return CreateToken(TK.Not, ReadWord());
 
 			return null; 
 		}

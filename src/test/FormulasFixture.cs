@@ -63,16 +63,14 @@ namespace Abacus.Test {
 		};
 
 		_ basic_comparisons  = assert => {
-			var res = Eval("1 =  1");
-			WriteLine(res);
 			assert.IsTrue(Eval("1 =  1"));
-			// assert.IsTrue(Eval("2 <> 3"));
-			// assert.IsTrue(Eval("2 >  1"));
-			// assert.IsTrue(Eval("2 >= 1"));
-			// assert.IsTrue(Eval("2 >= 2"));
-			// assert.IsTrue(Eval("2 <= 3"));
-			// assert.IsTrue(Eval("3 <= 3"));
-			// assert.IsTrue(Eval("2 <  3"));
+			assert.IsTrue(Eval("2 <> 3"));
+			assert.IsTrue(Eval("2 >  1"));
+			assert.IsTrue(Eval("2 >= 1"));
+			assert.IsTrue(Eval("2 >= 2"));
+			assert.IsTrue(Eval("2 <= 3"));
+			assert.IsTrue(Eval("3 <= 3"));
+			assert.IsTrue(Eval("2 <  3"));
 		};
 
 		//TODO: And/Or/Not

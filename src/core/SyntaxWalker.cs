@@ -7,17 +7,18 @@ namespace Abacus {
     using System.Linq.Expressions;
     using System.Reflection;
     using BF = System.Reflection.BindingFlags;
-    // using LinqE = System.Linq.Expressions.Expression;
     using static System.Linq.Expressions.Expression;
     using static Abacus.Error;
-    // using static Abacus.Operator;
+    using static System.String;
+    using static System.Convert;
 
 	//TODO: Explore different way to handle syntax errors. I think
 	//      for this particular component throwing exceptions
 	//      is not an option (performance wise).
     public class SyntaxWalker {
 		static readonly Type WALKER_TYPE = typeof(SyntaxWalker);
-		static readonly BF STAPRIVATE = BF.Static | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
+		static readonly BF STAPRIVATE = 
+			BF.Static | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
 
 		static readonly MethodInfo POW = WALKER_TYPE.GetMethod(
 				"__Pow", STAPRIVATE);
@@ -25,6 +26,14 @@ namespace Abacus {
 		static readonly MethodInfo TRUNC = WALKER_TYPE.GetMethod(
 				"__Trunc", STAPRIVATE);
 
+		static readonly MethodInfo CMP = WALKER_TYPE.GetMethod(
+				"__Cmp", STAPRIVATE);
+
+		static readonly Expression 
+			MINUSONE = Constant(-1),
+			ZERO = Constant(0),
+			ONE = Constant(1);
+		
 		/// Code generation entry point.
         public Expression Walk(SyntaxTree rootNode) {
 			var childs = rootNode.GetChilds();
@@ -46,7 +55,6 @@ namespace Abacus {
 				return Negate(val);
 			return val;
 		}
-
 
         public Expression Walk(Const expr)
 			=> Constant(expr.Val, expr.Type);
@@ -72,12 +80,54 @@ namespace Abacus {
 			return null;
 		}
 
+        public Expression Walk(EqualExpression expr)
+			=> Equal(CallCmp(expr.Lhs, expr.Rhs), ZERO);
+
+        public Expression Walk(NotEqualExpression expr)
+			=> NotEqual(CallCmp(expr.Lhs, expr.Rhs), ZERO);
+
+        public Expression Walk(LessThanExpression expr)
+			=> Equal(CallCmp(expr.Lhs, expr.Rhs), MINUSONE);
+
+        public Expression Walk(LessThanEqExpression expr)
+			=> LessThan(CallCmp(expr.Lhs, expr.Rhs), ONE);
+
+        public Expression Walk(GreaterThanExpression expr)
+			=> Equal(CallCmp(expr.Lhs, expr.Rhs), ONE);
+		
+        public Expression Walk(GreaterThanEqExpression expr)
+			=> GreaterThan(CallCmp(expr.Lhs, expr.Rhs), MINUSONE);
+
+
 		//RUNTIME HELPERS {{{
 		static double __Pow(double num, double pow) 
 			=> Math.Pow(num, pow);
 
 		static double __Trunc(double num, double div)
 			=> Math.Truncate(num/div);
+
+		static int __Cmp(object lhs, object rhs) {
+			// As of now, strings are the only "special case" for comparisons,
+			// all the other types are converted to number and then compared
+			// to each other.
+			// (This may have to change if we extend the abaucs type system.
+			//  i.e. objects, arrays, etc....).
+			if (lhs is string)
+				return string.Compare((string)lhs, Intern(rhs?.ToString()));
+
+			if (lhs is DateTime)
+				lhs = ((DateTime)lhs).ToOADate();
+
+			if (rhs is DateTime)
+				rhs = ((DateTime)rhs).ToOADate();
+
+			// Are we going to support multiple cultures?
+			// If so, we must to take that into account when converting values.
+			double lhd = ToDouble(lhs);
+			double rhd = ToDouble(rhs);
+
+			return lhd == rhd ? 0 : lhd < rhd ? -1 : 1;
+		}
 		//}}}
 
 
@@ -91,12 +141,28 @@ namespace Abacus {
 			? Convert(expr, typeof(double))
 			: expr;
 
+		Expression Obj(Expression expr)
+			=> (expr.Type != typeof(object))
+			? Convert(expr, typeof(object))
+			: expr;
+
+
+		Expression CallCmp(SyntaxNode lhs, SyntaxNode rhs) 
+			=> Call(null, CMP, 
+					Obj(lhs.Accept(this)), 
+					Obj(rhs.Accept(this)));
+
+
+
 		/// Helper method to emulate the pow operator.
 		Expression Pow(Expression num, Expression pow) 
 			=> Call(null, POW, Dbl(num), Dbl(pow));
 
 		Expression Floor(Expression lhs, Expression rhs)
 			=> Call(null, TRUNC, Dbl(lhs), Dbl(rhs)); 
+
+		Expression Cmp(Expression lhs, Expression rhs)
+			=> Call(null, CMP, lhs, rhs); 
 
 		void ReportUnkwnowBinaryOp(Operator op) {
 			Die($"Unknown binary operator {op}");

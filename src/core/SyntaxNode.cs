@@ -114,7 +114,7 @@ namespace Abacus {
 		}
 
 		public override Expression Accept(SyntaxWalker walker) 
-			=> NotImplemented();
+			=> walker.Walk(this);
 
 	}
 
@@ -128,7 +128,7 @@ namespace Abacus {
 		}
 
 		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
+			=> walker.Walk(this);
 	}
 
 	public class LessThanEqExpression : SyntaxNode {
@@ -141,7 +141,46 @@ namespace Abacus {
 		}
 
 		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
+			=> walker.Walk(this);
+	}
+
+	public class LessThanExpression : SyntaxNode {
+		public readonly SyntaxNode Lhs, Rhs;
+
+		public LessThanExpression(SyntaxNode lhs, SyntaxNode rhs) {
+			DbgEnsureLhsRhs(lhs, rhs);
+			Lhs = lhs;
+			Rhs = rhs;
+		}
+
+		public override Expression Accept(SyntaxWalker walker)
+			=> walker.Walk(this);
+	}
+
+	public class GreaterThanExpression : SyntaxNode {
+		public readonly SyntaxNode Lhs, Rhs;
+
+		public GreaterThanExpression(SyntaxNode lhs, SyntaxNode rhs) {
+			DbgEnsureLhsRhs(lhs, rhs);
+			Lhs = lhs;
+			Rhs = rhs;
+		}
+
+		public override Expression Accept(SyntaxWalker walker)
+			=> walker.Walk(this);
+	}
+
+	public class GreaterThanEqExpression : SyntaxNode {
+		public readonly SyntaxNode Lhs, Rhs;
+
+		public GreaterThanEqExpression(SyntaxNode lhs, SyntaxNode rhs) {
+			DbgEnsureLhsRhs(lhs, rhs);
+			Lhs = lhs;
+			Rhs = rhs;
+		}
+
+		public override Expression Accept(SyntaxWalker walker)
+			=> walker.Walk(this);
 	}
 
 	public class NotExpression : SyntaxNode {
@@ -184,44 +223,6 @@ namespace Abacus {
 	}
 
 
-	public class LessThanExpression : SyntaxNode {
-		public readonly SyntaxNode Lhs, Rhs;
-
-		public LessThanExpression(SyntaxNode lhs, SyntaxNode rhs) {
-			DbgEnsureLhsRhs(lhs, rhs);
-			Lhs = lhs;
-			Rhs = rhs;
-		}
-
-		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
-	}
-
-	public class GreaterThanExpression : SyntaxNode {
-		public readonly SyntaxNode Lhs, Rhs;
-
-		public GreaterThanExpression(SyntaxNode lhs, SyntaxNode rhs) {
-			DbgEnsureLhsRhs(lhs, rhs);
-			Lhs = lhs;
-			Rhs = rhs;
-		}
-
-		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
-	}
-
-	public class GreaterThanEqExpression : SyntaxNode {
-		public readonly SyntaxNode Lhs, Rhs;
-
-		public GreaterThanEqExpression(SyntaxNode lhs, SyntaxNode rhs) {
-			DbgEnsureLhsRhs(lhs, rhs);
-			Lhs = lhs;
-			Rhs = rhs;
-		}
-
-		public override Expression Accept(SyntaxWalker walker)
-			=> NotImplemented();
-	}
 
 	public class UnaryExpression : SyntaxNode {
 		public readonly Operator Op;

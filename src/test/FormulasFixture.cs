@@ -75,5 +75,8 @@ namespace Abacus.Test {
 
 		//TODO: And/Or/Not
 		//TODO: Op presedence
+		//TODO: Function calls
+		//TODO: Access locals
+		//
 	}
 }

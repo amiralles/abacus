@@ -164,7 +164,7 @@ namespace Abacus {
 
         string Expected (string term) {
             return $"Expected term: {term}." + 
-                   $"next char: ({PeekChar(at: -1)}) " + 
+                   $"next char: ({PeekChar()}) " + 
 				   $"- pos: {_currentPos} - ln: {_lineNo}.";
         }
 
@@ -372,19 +372,24 @@ namespace Abacus {
 
 		Token TokenizeSingleQuoteStr() {
 			DieIf(PeekChar() != SQ, SingleQuoteExpected());
-			ReadChar();
+			ReadChar();//open
 
 			int size = 0;
 			char ch;
+
+			if (PeekChar() == SQ) { //<= empty string.
+				ReadChar(); //close
+				return CreateToken(TK.StringLiteral, $"''");
+			}
+
 			while((ch = PeekChar(at: size + 1)) != SQ && ch != NULLTERM)
 				++size;
 
 			var buff = ReadChars(size, downcase: false);
-
 			DieIf(PeekChar() != SQ, SingleQuoteExpected());
 			ReadChar();
 			return CreateToken(TK.StringLiteral, $"'{new string(buff)}'");
-			
+
 		}
 
 		Token TokenizeDoubleQuoteStr() {

@@ -65,6 +65,8 @@ namespace Abacus.Test {
 		_ basic_comparisons = assert => {
 			assert.IsTrue(Eval("1 =  1"));
 			assert.IsTrue(Eval("0 = ''"));
+			assert.IsTrue(Eval("'' = ''"));
+			assert.IsTrue(Eval("'' = 0"));
 			assert.IsTrue(Eval("2 <> 3"));
 			assert.IsTrue(Eval("2 >  1"));
 			assert.IsTrue(Eval("2 >= 1"));

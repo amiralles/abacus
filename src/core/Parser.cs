@@ -118,14 +118,17 @@ namespace Abacus {
 
 		SyntaxNode ParseNumLit() {
 			var t = ReadToken(TK.NumericLiteral);
-			if (t.Text.Contains('.'))
-				return new Const(double.Parse(t.Text), typeof(double));
-			return new Const(int.Parse(t.Text), typeof(int));
+			return new Const(double.Parse(t.Text), typeof(double));
 		}
 
 		SyntaxNode ParseStrLit() {
 			var t = ReadToken(TK.StringLiteral);
-			return new Const(t.Text, typeof(string));
+
+			// Empty string are like this: "''"
+			DbgDieIf(t.Text.Length < 2,
+				   	"Internal error. String literal text too short.");
+			var str = t.Text.Substring(1, t.Text.Length - 2);
+			return new Const(str, typeof(string));
 		}
 
         SyntaxNode AddTrailers(SyntaxNode expr) {

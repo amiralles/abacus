@@ -6,6 +6,12 @@ namespace Abacus.Test {
 
 	class TokenizerFixture {
 
+		_ empty_string = assert => {
+			var tokenizer = new Tokenizer("'' = 0");
+			var stream = tokenizer.Tokenize();
+			assert.Equal(TK.StringLiteral, stream[0].Kind);
+		};
+
 		_ and_operator = assert => {
 			var tokenizer = new Tokenizer("1 and 1");
 			var stream = tokenizer.Tokenize();

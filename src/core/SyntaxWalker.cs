@@ -140,8 +140,11 @@ namespace Abacus {
 			// to each other.
 			// (This may have to change if we extend the abaucs type system.
 			//  i.e. objects, arrays, etc....).
-			if (lhs is string)
+			if (lhs is string) {
+				if (rhs is double && ((double)rhs) == 0)
+					rhs = "";
 				return string.Compare((string)lhs, Intern(rhs?.ToString()));
+			}
 
 			if (lhs is DateTime)
 				lhs = ((DateTime)lhs).ToOADate();

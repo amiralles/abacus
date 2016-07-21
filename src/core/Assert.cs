@@ -13,6 +13,11 @@ namespace Abacus {
 			DbgDieIf(rhs == null, "rhs can't be null.");
 		}
 
+		[Conditional("DEBUG")]
+		public static void DbgEnsure(string name, object val) {
+			Ensure(name, val);
+		}
+
 		public static void Ensure(string name, object val) {
 			DieIf(val == null, $"{name} can't be null.");
 		}

@@ -40,8 +40,9 @@ namespace Abacus {
 	}
 
 	public class SyntaxTree : SyntaxNode { 
+
 		public override Expression Accept(SyntaxWalker walker)
-			=> walker.Walk(this);
+			=> NotImplemented();
 	}
 
 	public class Const  : SyntaxNode {

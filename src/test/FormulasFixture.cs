@@ -1,11 +1,16 @@
 #pragma warning disable 414, 219
 namespace Abacus.Test {
+	using System;
+	using System.Reflection;
+	using System.Linq.Expressions;
+	using static Abacus.Utils;
+	using static System.Linq.Expressions.Expression;
 	using static Interpreter;
 	using static System.Console;
 	using _ = System.Action<Contest.Core.Runner>;
 
 
-	class Formulas {
+	class FormulasFixture {
 
 		_ basic_math = assert => {
 			// add
@@ -106,9 +111,60 @@ namespace Abacus.Test {
 
 		};
 
+		// // This is how we get access to local variables.
+		// _ compile2_closure =  assert => {
+		// 	var p1 = Parameter(typeof(string), "name");
+		// 	var p2 = Parameter(typeof(object[]), "locals");
+		// 	var gloc = typeof(FormulasFixture).GetMethod(
+		// 				"GetLocal",
+		// 				new [] {typeof(string), typeof(object[])});
+        //
+		// 	var call = Call(null, gloc, new [] { p1, p2 });
+		// 	var blk = Block(new Expression[]{ call });
+		// 	var lambda = Expression.Lambda<Func<string, object[], object>>
+		// 		(blk, new [] {p1, p2});
+        //
+		// 	PrintLinqTree(lambda);
+		// 	var fn = lambda.Compile();
+        //
+		// 	fn("somename", new object[]{"12312","!231231"});
+		// };
+        //
+		// public static object GetLocal(string name, object[] locals) {
+		// 	WriteLine("====================================");
+		// 	WriteLine(name);
+		// 	WriteLine(locals?.ToString() ?? "null");
+		// 	WriteLine(locals[0]);
+		// 	WriteLine("====================================");
+		// 	return null;
+		// }
+        //
+		// /// This is (int a nut shell) how the code generation works.
+		// /// This code emits a funcition that takes an argunment
+		// /// and prints its value to te console.
+		// /// (It also prints two constants values interleaved).
+		// _ compile_closure =  assert => {
+		// 	var p = Parameter(typeof(object), "arg");
+		// 	var wl = typeof(Console).GetMethod(
+		// 				"WriteLine", 
+		// 				new Type[]{typeof(object)
+		// 			});
+        //
+		// 	var call1 = Call(null, wl, Constant("fruli"));
+		// 	var call2 = Call(null, wl, p);
+		// 	var call3 = Call(null, wl, Constant("fru"));
+        //
+		// 	var blk = Block(new Expression[]{ call1, call2, call3 });
+		// 	var lambda = Expression.Lambda<Action<object>>(blk, p);
+        //
+		// 	PrintLinqTree(lambda);
+		// 	var fn = lambda.Compile();
+		// 	fn("frali");
+		// };
+        //
 		_ equality_coercions_and_fun_with_casts = assert => {
-			assert.IsTrue(Eval("0 = ''"));
 			assert.IsTrue(Eval("0 = false"));
+			assert.IsTrue(Eval("0 = ''"));
 			assert.IsTrue(Eval("0 = null"));
 			assert.IsTrue(Eval("0 = NaN"));
 
@@ -133,7 +189,18 @@ namespace Abacus.Test {
 			assert.IsTrue(Eval("null = ''"));
 		};
 
-		//TODO: Access locals
+		_ access_locals = assert => {
+			var names  = new [] { "a", "b" };
+			var locals = new object[] { 2d, 3d };
+
+			//TODO: Sanitze Eval args. 
+			//      As of now, the only supported type for numbers is
+			//      double, to avoid odd errors we must go over the
+			//      argument list and convert every number to double.
+			assert.Equal(5d, Eval("a+b", names, locals));
+		};
+
+		//TODO: Add more test to Access locals
 		//TODO: Function calls
 		//TODO: Op presedence
 		//

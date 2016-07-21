@@ -1,7 +1,14 @@
 
 namespace Abacus {
 	using System;
+	using System.Reflection;
+	using System.Diagnostics;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Linq.Expressions;
+	using static Abacus.Assert;
+	using static Abacus.Utils;
+	using static Abacus.Error;
 	using static System.Console;
 	using static System.Linq.Expressions.Expression;
 
@@ -17,19 +24,35 @@ namespace Abacus {
 			/// Error division by zero.
 			ERRDIV0 = "#DIV!0";
 
+		public static object Eval(string src) {
+			var localNames = new string[0];
+			var locals     = new string[0];
+			return Eval(src, localNames, locals);
+		}
+
 		// TODO: Add session (for caching purposes).
 		// TODO: Add OnSyntaxtErr handler.
 		// TODO: Add OnError handler.
-		public static object Eval(string src, string[] localNames = null) {
-			//TODO: If same src and same locals,
-			//      we can use a cached version of the compiled funcion.
+		public static object Eval(
+				string src, string[] localNames, object[] locals) {
+
+			EnsureEvalArgs(src, localNames, locals);
 
 			//TODO: If same session, same locals, same src, we don't
 			//      have to do anything, just return the cached result.
+			//
+			//      If same session and same src, we don't have to compile
+			//      anything, just re-use a cached version of the previously
+			//      compiled function.
 			try {
+
+				//TODO: Sanitize localNames make sure there is no keyword in there.
+				localNames = Merge<string>(BuiltinLocals.NAMES, localNames);
+				locals     = Merge<object>(BuiltinLocals.VALUES, locals);
+				DbgEnsureMerge(localNames, locals);
+
 				var fn   = Compile(src, localNames);
-				var argv = new object[0];
-				var res  = fn(argv);
+				var res  = fn(localNames, locals);
 
 				if (res is double) {
 					var dbl = (double) res;
@@ -55,15 +78,14 @@ namespace Abacus {
 			}
 		}
 
-		static Func<object[], object> Compile(string src, string[] localNames) {
+		static Func<string[], object[], object> Compile(
+				string src, string[] localNames) {
 			var tokenizer = new Tokenizer(src);
 			var parser    = new Parser(tokenizer, localNames);
 			var tree      = parser.Parse();
-			var walker    = new SyntaxWalker();
-			var program   = walker.Walk(tree);
-			var argv      = Parameter(typeof(object[]), "argv");
-			var lambda    = Lambda<Func<object[], object>>(program, argv);
-			return lambda.Compile();
+
+			var walker  = new SyntaxWalker();
+			return walker.Compile(tree);
 		}
 
 		/// This method is responsable for dispaching any 
@@ -72,6 +94,26 @@ namespace Abacus {
 				object target, string lowerFnName, object[] argv) {
 
 			return null;
+		}
+
+
+		[Conditional("DEBUG")]
+		static void DbgEnsureMerge(string[] localNames, object[]locals) {
+				DbgDieIf(localNames.Length == 0, 
+						"Internal Error. Failed to merge localNames.");
+				DbgDieIf(locals.Length == 0,     
+						"Internal Error. Failed to merge locals.");
+				DbgDieIf(locals.Length != localNames.Length, 
+						"Internal Error. Failed to merge locals.");
+
+		}
+
+		static void EnsureEvalArgs(
+				string src, string[] localNames, object[]locals) {
+
+			Ensure("src", src);
+			Ensure("localNames", localNames);
+			Ensure("locals", locals);
 		}
 	}
 }

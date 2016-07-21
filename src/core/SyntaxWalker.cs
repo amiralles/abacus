@@ -14,6 +14,7 @@ namespace Abacus {
     using static System.String;
     using static Abacus.Error;
     using static Abacus.Assert;
+    using static Abacus.Utils;
 
 	//TODO: Explore different way to handle syntax errors. I think
 	//      for this particular component throwing exceptions
@@ -24,8 +25,8 @@ namespace Abacus {
 		static readonly BF STAPRIVATE = 
 			BF.Static | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
 
-		static readonly BF PRIVATE = 
-			BF.Instance | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
+		// static readonly BF PRIVATE = 
+		// 	BF.Instance | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
 
 		static readonly MethodInfo POW = WALKER_TYPE.GetMethod(
 				"__Pow", STAPRIVATE);
@@ -40,47 +41,34 @@ namespace Abacus {
 				"__ToBln", STAPRIVATE);
 
 		static readonly MethodInfo GET = WALKER_TYPE.GetMethod(
-				"__GetLocal", PRIVATE);
+				"__GetLocal", STAPRIVATE);
 
 		static readonly Expression 
 			MINUSONE = Constant(-1),
 			ZERO = Constant(0),
 			ONE = Constant(1);
 
-		// Points to the current instance of the walker.
-		readonly Expression THIS;
+		// Compiled function's arguments.
+		ParameterExpression _localNames, _locals;
 
-		/// var names.
-		readonly string[] _localNames;
+		/// Code generation entry point.
+		public Func<string[], object[], object> Compile(SyntaxTree tree) {
+			_localNames = Parameter(typeof(string[]), "localNames");
+			_locals     = Parameter(typeof(object[]), "locals");
 
-		// In the future this field will be able to handle updates. This
-		// makes sense because most of the time we will be working on 
-		// tabular data with one header and many rows. (That's why localNames
-		// is inmutable). 
-		/// var values.
-		object[] _locals;
-
-		//TODO: pass locals.
-		public SyntaxWalker() {
-			THIS = Constant(this);
-
-			// Because we can reuse variable names and also whant lightweight
-			// structures we use two arrays instead of a dictionary.
-			_localNames = new [] {"null", "nan", "false", "true"};
-			_locals     = new object [] { null, NaN, false, true };
-			//
-		}
-
-		public void UpdateLocals(object[] locals) {
-			Ensure("locals", locals);
-
-			if (_locals.Length != locals.Length)
-				Die("Locals must be the same size.");
-
-			_locals = locals;
+			var program = Walk(tree);
+			var lambda  = Lambda<Func<string[], object[], object>>(
+					program, 
+					new [] {
+						_localNames,
+						_locals
+					});
+					
+			PrintLinqTree(lambda);
+			return lambda.Compile();
 		}
 		
-		/// Code generation entry point.
+		// Version simplificada del walk, accedo al parametro directamente.
         public Expression Walk(SyntaxTree rootNode) {
 			var childs = rootNode.GetChilds();
 			var body = new Expression[childs.Length];
@@ -88,15 +76,16 @@ namespace Abacus {
 				body[i] = childs[i].Accept(this);
 			}
 
-			Expression res = Block(body);
+			int last = body.Length-1;
+			if (body[last].Type != typeof(object))
+				body[last] = Convert(body[last], typeof(object));
 
-			return res.Type != typeof(object)
-				? Convert(res, typeof(object))
-				: res;
+			return Block(body);
         }
-		
-        public Expression Walk(GetLocal expr)
-			=> Call(THIS, GET, Constant(expr.Name));
+
+        public Expression Walk(GetLocal expr) {
+			return Call(null, GET, Constant(expr.Name), _localNames, _locals);
+		}
 
         public Expression Walk(UnaryExpression expr) {
 			var val = expr.Expr.Accept(this);
@@ -163,11 +152,31 @@ namespace Abacus {
 		static double __Trunc(double num, double div)
 			=> Math.Truncate(num/div);
 
-		object __GetLocal(string name) {
-			var idx = Array.IndexOf(_localNames, name);
-			if (idx > -1)
-				return _locals[idx];
 
+
+		static object __GetLocal(
+				string name, string[] localNames,  object[] locals) {
+			// Be careful, _localNames and GetLocals must be in sync with
+			// eachother.
+
+			 DbgPrint($"==> get { name }");
+			 DbgPrint($"==> localNames { ArrToStr(localNames) }");
+			 DbgPrint($"==> locals     { ArrToStr(locals) }");
+
+			var idx = Array.IndexOf(localNames, name);
+			if (idx > -1) {
+#if DEBUG
+				if (idx >= locals.Length)
+					Die("_localNames and _locals out of sync.");
+				return locals[idx];
+#else
+				return locals[idx];
+#endif
+			}
+
+#if DEBUG
+			Die($"walker => undefined local {name}");
+#endif
 			// Undefined variable.
 			return Interpreter.ERRNAME;
 		}

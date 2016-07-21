@@ -8,32 +8,25 @@ namespace Abacus {
 	using static System.String;
 	using static Abacus.Error;
 	using static Abacus.Assert;
+	using static Abacus.Utils;
 	using TK = Abacus.TokenKind;
 	using BinOp = Abacus.BinaryOperator;
 
 	public class Parser {
-		//============================================================
-		/// How many builtin locals do we have?
-		const int LOCBUILTINS = 4;
-
-		// If you add a locals here, update LOCBUILTINS accordingly.
-		const string
-			NULL  = "null",
-			NAN   = "nan",
-			FALSE = "false",
-			TRUE  = "true";
-		//============================================================
-
 #if DEBUG
 		const int DMP_STREAM_LEN = 20;
 		const int MAX_SAME_PEEK_COUNT = 300;
 		int _lastPeekPos, _samePeekCount;
 #endif
 		readonly Token[] _stream;
-		readonly string[] _locals;
 		readonly Token EOFToken      = new Token("\0", TK.EOF, -1, -1);
 		readonly SyntaxNode NullExpr = new Const(null);
 		readonly SyntaxNode STD      = new Const(null);
+
+		/// Hence the language doesn't support variable definitions, all
+		/// the variables names must be supplied from the outside world.
+		/// (_localNames also contains builtin locals).
+		readonly string[] _localNames;
 
 		int _currPos       = -1,
 			_currLineNo    =  1;
@@ -60,28 +53,14 @@ namespace Abacus {
 			};
 
 
-		public Parser(Tokenizer tokenizer, string[] locals) {
-			Ensure("tokenizer", tokenizer);
+		/// localNames contains the name of all user defined variables. If
+		/// there isn't anyone it must be an empty array (NOT null).
+		public Parser(Tokenizer tokenizer, string[] localNames) {
+			Ensure("tokenizer",  tokenizer);
+			Ensure("localNames", localNames);
+			_localNames  = localNames;
 			_stream = tokenizer.Tokenize();
-
-			if (locals != null) {
-				// builtins.
-				_locals = new string[LOCBUILTINS + locals.Length];
-				_locals[0] = NULL;
-				_locals[1] = NAN;
-				_locals[2] = FALSE;
-				_locals[3] = TRUE;
-
-				// user def.
-				for(int i = 0, j = LOCBUILTINS; i < locals.Length; ++i, ++j)
-					_locals[j] = locals[i];
-			}
-			else {
-				// builtins.
-				_locals = new string[] { NULL, NAN, FALSE, TRUE };
-			}
 		}
-
 
 		public SyntaxTree Parse() {
 			var tree = new SyntaxTree();
@@ -130,10 +109,14 @@ namespace Abacus {
 
 			if (la.Kind == TK.Identifier) {
 				var name = ReadToken(TK.Identifier).Text;
-				if (_locals.Contains(name))
+				if (_localNames.Contains(name))
 					return new GetLocal(name);
 
-				//Std call.
+				// Not a function call either.
+				if (PeekToken(at: 2).Kind != TK.LeftParen)
+					Die($"Undefined local {name}.");
+				// ========================================
+
 				return ParseFnCall(STD, name);
 			}
 
@@ -173,6 +156,7 @@ namespace Abacus {
 		SyntaxNode ParseFnCall(SyntaxNode target, string funcname) {
 			Ensure("target", target);
 			Ensure("funcname", funcname);
+
 
 			ReadToken(TK.LeftParen);
 			var argv = new List<SyntaxNode>();
@@ -365,7 +349,6 @@ namespace Abacus {
 		bool EOF => _currPos + 1 >= _stream.Length;
 
 		bool EOL => PeekToken().Kind == TK.NewLine;
-
 
 		string ExpectedButWas(TK expected, TK actual) =>
 			$"Expected {expected} was {actual}.\n" + PosInfo();

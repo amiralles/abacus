@@ -2,3 +2,4 @@
 *.swo
 *.config
 .contest_tmp
+bin/*.dll

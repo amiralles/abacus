@@ -328,6 +328,39 @@ namespace Abacus.Test {
 
 		};
 
+		_ basic_logic_with_locals = assert => {
+			var names  = new [] { 
+				"pos1", "pos2", "zero"
+			};
+
+			var locals = new object[] { 
+				1, 2, 0
+			};
+
+			Func<string, object> locEval = src =>
+					Eval(src, names, locals);
+			// And
+			assert.IsTrue(locEval("pos1 and pos1"));
+			assert.IsTrue(locEval("pos1=pos1 and pos2=pos2"));
+			assert.IsFalse(locEval("pos1=pos1 and pos1=pos2"));
+			assert.IsFalse(locEval("pos1=pos2 and pos1=pos1"));
+
+			// Or
+			assert.IsTrue(locEval("zero or pos1"));
+			assert.IsTrue(locEval("pos1=pos1 or pos1=pos2"));
+			assert.IsTrue(locEval("pos1=pos2 or pos1=pos1"));
+			assert.IsTrue(locEval("pos1 or zero"));
+			assert.IsFalse(locEval("zero or zero"));
+
+			// Not
+			assert.IsTrue(locEval("not zero"));
+			assert.IsFalse(locEval("not pos1"));
+			assert.IsFalse(locEval("not pos1=pos1"));
+			assert.IsTrue(locEval("not pos1=zero"));
+
+		};
+
+
 		//TODO: Add more test to Access locals
 		//TODO: Function calls
 		//TODO: Op presedence

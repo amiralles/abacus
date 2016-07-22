@@ -100,7 +100,7 @@ namespace Abacus {
 		/// on how to dispatch method calls. (This is for integration
 		/// purposes).
 		public static Func<object, string, object[], MethodResult> 
-			OnDispatchCall = (reciever, lowerFnName, argv) => 
+			OnDispatchCall = (reciever, lowerName, argv) => 
 				new MethodResult(handled: false, result: null);
 
 		/// This method is responsable for dispaching any 
@@ -109,23 +109,21 @@ namespace Abacus {
 		/// calls to non std functions. (i.e. Integrate their own api).
 		/// See: OnDispatchCall.
 		static object __Dispatch(
-				object target, string lowerFnName, object[] argv) {
+				object target, string lowerName, object[] argv) {
 
-			if (target != null) {
-				Die("Non std call are not implemented yet...");
-			}
+			if (target != null)
+				Die("Non Static Calls are not implemented yet...");
 
-			var mi = __GetMethod(target, lowerFnName, StdLib.GetTypes(argv));
+			var mi = __GetMethod(target, lowerName, StdLib.GetTypes(argv));
 
 			if (mi == null) {
-				var call = OnDispatchCall(target, lowerFnName, argv);
+				var call = OnDispatchCall(target, lowerName, argv);
 				if (!call.Handled)
-					Die($"No method error ({lowerFnName}).");
+					Die($"No method error ({lowerName}).");
 				return call.Result;
 			}
 
 			//TODO: cache method info.
-
 			return mi.Invoke(null, argv);
 		}
 

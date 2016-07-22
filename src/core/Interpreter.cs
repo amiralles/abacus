@@ -36,6 +36,7 @@ namespace Abacus {
 		public static object Eval(
 				string src, string[] localNames, object[] locals) {
 
+			locals = SanitizeNumLocals(locals);
 			EnsureEvalArgs(src, localNames, locals);
 
 			//TODO: If same session, same locals, same src, we don't

@@ -202,9 +202,9 @@ namespace Abacus.Test {
 			var mixedLocals = new object [] {
 			   	1, false, 4.5, "fruli", 3.14, Now 
 			};
+
 			sanitized = SanitizeNumLocals(mixedLocals);
 			for(int i = 0; i < sanitized.Length; ++i) {
-				WriteLine(sanitized[i]);
 				if (i % 2 == 0)
 					assert.Equal(typeof(double), sanitized[i].GetType());
 				else
@@ -214,12 +214,9 @@ namespace Abacus.Test {
 
 		_ access_locals = assert => {
 			var names  = new [] { "a", "b" };
-			var locals = new object[] { 2d, 3d };
 
-			//TODO: Sanitze Eval args. 
-			//      As of now, the only supported type for numbers is
-			//      double, to avoid odd errors we must go over the
-			//      argument list and convert every number to double.
+			//intentional num type mixup.
+			var locals = new object[] { 2, 3d };
 			assert.Equal(5d, Eval("a+b", names, locals));
 		};
 

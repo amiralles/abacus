@@ -361,18 +361,23 @@ namespace Abacus.Test {
 		_ hook_api_call  = assert => {
 			var bak = Interpreter.OnDispatchCall;
 			try {
+
+				// Hook an external api.
 				Interpreter.OnDispatchCall = (reciever, name, arg) =>
 						new MethodResult(handled: true, result: 123);
 
 				assert.Equal(123, Eval("NonStdCall('frali', 'fruli', 'fru')"));
 			}
 			finally {
+				// Restore OnDispatchCall original implementation to 
+				// avoid cross test failures.
 				Interpreter.OnDispatchCall = bak;
 			}
 		};
 
-		//TODO: Function calls
-		//TODO: Op presedence
-		//
+		// TODO: Caches.
+		// TODO: Function calls with recievers.
+		// TODO: Op presedence
 	}
 }
+

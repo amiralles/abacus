@@ -359,10 +359,16 @@ namespace Abacus.Test {
 		};
 
 		_ hook_api_call  = assert => {
-			Interpreter.OnDispatchCall = (reciever, name, arg) =>
-				new MethodResult(handled: true, result: 123);
+			var bak = Interpreter.OnDispatchCall;
+			try {
+				Interpreter.OnDispatchCall = (reciever, name, arg) =>
+						new MethodResult(handled: true, result: 123);
 
-			assert.Equal(123, Eval("NonStdCall('frali', 'fruli', 'fru')"));
+				assert.Equal(123, Eval("NonStdCall('frali', 'fruli', 'fru')"));
+			}
+			finally {
+				Interpreter.OnDispatchCall = bak;
+			}
 		};
 
 		//TODO: Function calls

@@ -4,6 +4,7 @@ namespace Abacus.Test {
 	using System.Reflection;
 	using System.Linq.Expressions;
 	using static Abacus.Utils;
+	using static Abacus.Error;
 	using static System.Linq.Expressions.Expression;
 	using static Interpreter;
 	using static System.Console;
@@ -356,6 +357,14 @@ namespace Abacus.Test {
 		_ basic_function_calls = assert => {
 			assert.Equal(true, Eval("Bln(1)"));
 		};
+
+		_ hook_api_call  = assert => {
+			Interpreter.OnDispatchCall = (reciever, name, arg) =>
+				new MethodResult(handled: true, result: 123);
+
+			assert.Equal(123, Eval("NonStdCall('frali', 'fruli', 'fru')"));
+		};
+
 		//TODO: Function calls
 		//TODO: Op presedence
 		//

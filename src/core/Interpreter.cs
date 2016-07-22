@@ -99,11 +99,9 @@ namespace Abacus {
 		/// This allows client code to provide their own implementation
 		/// on how to dispatch method calls. (This is for integration
 		/// purposes).
-		public static Func<object, string, object[], object, object> 
-			OnDispatchCall = (reciever, lowerFnName, argv, handled) => { 
-				handled = false;
-				return null;
-			};
+		public static Func<object, string, object[], MethodResult> 
+			OnDispatchCall = (reciever, lowerFnName, argv) => 
+				new MethodResult(handled: false, result: null);
 
 		/// This method is responsable for dispaching any 
 		/// function call than happens inside the script.
@@ -119,8 +117,12 @@ namespace Abacus {
 
 			var mi = __GetMethod(target, lowerFnName, StdLib.GetTypes(argv));
 
-			if (mi == null)
-				Die($"No method error ({lowerFnName}).");
+			if (mi == null) {
+				var call = OnDispatchCall(target, lowerFnName, argv);
+				if (!call.Handled)
+					Die($"No method error ({lowerFnName}).");
+				return call.Result;
+			}
 
 			//TODO: cache method info.
 

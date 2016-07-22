@@ -432,9 +432,11 @@ namespace Abacus {
 
         bool WordTerminator(char ch) {
             var chnum = (int) ch;
-            if ((chnum >= 48 && chnum <= 57) || //<= 0..9
-				(chnum >= 65 && chnum <= 90) || //<= a-z
-                (chnum >= 97 && chnum <= 122))  //<= A-Z
+            if ((chnum >= 48 && chnum <= 57)  || //<= 0..9
+				(chnum >= 65 && chnum <= 90)  || //<= a-z
+                (chnum >= 97 && chnum <= 122) || //<= A-Z
+				(chnum == 95) //_
+				)
                 return false;
 
             return true;

@@ -21,6 +21,7 @@ namespace Abacus {
 	//      is not an option (performance wise).
     public class SyntaxWalker {
 		static readonly Type WALKER_TYPE = typeof(SyntaxWalker);
+		static readonly Type INTER_TYPE  = typeof(Interpreter);
 
 		static readonly BF STAPRIVATE = 
 			BF.Static | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
@@ -43,10 +44,20 @@ namespace Abacus {
 		static readonly MethodInfo GET = WALKER_TYPE.GetMethod(
 				"__GetLocal", STAPRIVATE);
 
+		static readonly MethodInfo DISP = INTER_TYPE.GetMethod(
+				"__Dispatch", STAPRIVATE, 
+				null,
+				new [] {
+					typeof(object),
+					typeof(string),
+					typeof(object[])
+				},
+				null);
+
 		static readonly Expression 
 			MINUSONE = Constant(-1),
-			ZERO = Constant(0),
-			ONE = Constant(1);
+			ZERO     = Constant(0),
+			ONE      = Constant(1);
 
 		// Compiled function's arguments.
 		ParameterExpression _localNames, _locals;
@@ -86,6 +97,35 @@ namespace Abacus {
         public Expression Walk(GetLocal expr) {
 			return Call(null, GET, Constant(expr.Name), _localNames, _locals);
 		}
+
+
+		public Expression Walk(FuncCall fn) {
+
+			Expression reciever = Constant(null);
+			if (fn.Target != null)
+				reciever = fn.Target.Accept(this);
+
+			Expression[] args = new Expression[0];
+
+			if (fn.Argv != null && fn.Argv.Length > 0) {
+				args = new Expression[fn.Argv.Length];
+				Expression a;
+				for(int i = 0; i < fn.Argv.Length; ++i) {
+					a = fn.Argv[i].Accept(this);
+					if (a.Type != typeof(object))
+						a = Convert(a, typeof(object));
+					args[i] = a;
+				}
+			}
+
+			DbgPrint(ArrToStr(args));
+			var argv = NewArrayInit(typeof(object), args);
+
+			//Global function.
+			return Call(null, DISP, 
+					reciever, Constant(fn.FuncName), argv);
+		}
+
 
         public Expression Walk(UnaryExpression expr) {
 			var val = expr.Expr.Accept(this);

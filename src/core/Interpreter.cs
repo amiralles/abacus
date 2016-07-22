@@ -11,6 +11,7 @@ namespace Abacus {
 	using static Abacus.Error;
 	using static System.Console;
 	using static System.Linq.Expressions.Expression;
+	using BF = System.Reflection.BindingFlags;
 
 	public class Interpreter {
 		public static readonly double Infinity = double.PositiveInfinity;
@@ -23,6 +24,11 @@ namespace Abacus {
 			ERRNAME = "#NAME!", 
 			/// Error division by zero.
 			ERRDIV0 = "#DIV!0";
+
+
+		static readonly Type STDLIB = typeof(StdLib);
+		static BF STAPUBCI = BF.Static | BF.DeclaredOnly | 
+						 	 BF.InvokeMethod | BF.IgnoreCase | BF.Public;
 
 		public static object Eval(string src) {
 			var localNames = new string[0];
@@ -89,14 +95,44 @@ namespace Abacus {
 			return walker.Compile(tree);
 		}
 
+
+		/// This allows client code to provide their own implementation
+		/// on how to dispatch method calls. (This is for integration
+		/// purposes).
+		public static Func<object, string, object[], object, object> 
+			OnDispatchCall = (reciever, lowerFnName, argv, handled) => { 
+				handled = false;
+				return null;
+			};
+
 		/// This method is responsable for dispaching any 
 		/// function call than happens inside the script.
-		public static object DispatchCall(
+		/// Client code must provide its own implementation to resolve
+		/// calls to non std functions. (i.e. Integrate their own api).
+		/// See: OnDispatchCall.
+		static object __Dispatch(
 				object target, string lowerFnName, object[] argv) {
 
-			return null;
+			if (target != null) {
+				Die("Non std call are not implemented yet...");
+			}
+
+			var mi = __GetMethod(target, lowerFnName, StdLib.GetTypes(argv));
+
+			if (mi == null)
+				Die($"No method error ({lowerFnName}).");
+
+			//TODO: cache method info.
+
+			return mi.Invoke(null, argv);
 		}
 
+		static MethodInfo __GetMethod(object target, string name, Type[]argv) {
+			if (target != null)
+				Die("Non std call are not implemented yet...");
+
+			return STDLIB.GetMethod(name, STAPUBCI, null, argv, null);
+		}
 
 		[Conditional("DEBUG")]
 		static void DbgEnsureMerge(string[] localNames, object[]locals) {

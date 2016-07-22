@@ -113,7 +113,7 @@ namespace Abacus {
 					return new GetLocal(name);
 
 				// Not a function call either.
-				if (PeekToken(at: 2).Kind != TK.LeftParen)
+				if (PeekToken().Kind != TK.LeftParen)
 					Die($"Undefined local {name}.");
 				// ========================================
 

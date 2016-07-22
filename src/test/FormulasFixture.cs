@@ -163,6 +163,7 @@ namespace Abacus.Test {
 		// 	fn("frali");
 		// };
         //
+	
 		_ equality_coercions_and_fun_with_casts = assert => {
 			assert.IsTrue(Eval("0 = false"));
 			assert.IsTrue(Eval("0 = ''"));
@@ -210,14 +211,6 @@ namespace Abacus.Test {
 				else
 					assert.NotEqual(typeof(double), sanitized[i].GetType());
 			}
-		};
-
-		_ access_locals = assert => {
-			var names  = new [] { "a", "b" };
-
-			//intentional num type mixup.
-			var locals = new object[] { 2, 3d };
-			assert.Equal(5d, Eval("a+b", names, locals));
 		};
 
 		_ basic_math_with_locals = assert => {
@@ -360,8 +353,9 @@ namespace Abacus.Test {
 
 		};
 
-
-		//TODO: Add more test to Access locals
+		_ basic_function_calls = assert => {
+			assert.Equal(true, Eval("Bln(1)"));
+		};
 		//TODO: Function calls
 		//TODO: Op presedence
 		//

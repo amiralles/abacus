@@ -220,6 +220,80 @@ namespace Abacus.Test {
 			assert.Equal(5d, Eval("a+b", names, locals));
 		};
 
+		_ basic_math_with_locals = assert => {
+
+			var names  = new [] { 
+				"pos25", "neg2", "neg35", 
+				"pos2",  "neg3", "pos3", 
+				"zero",  "pos1", "pos5",
+				"pos35"
+			};
+
+			var locals = new object[] { 
+				2.5, -2, -3.5,
+				2,   -3,  3,
+				0,    1,  5,
+				3.5
+			};
+
+			Func<string, object> locEval = src =>
+					Eval(src, names, locals);
+
+			// add
+			assert.Equal( 5d,   locEval("pos25 + pos25"));
+			assert.Equal(-5.5d, locEval("neg2  + neg35"));
+			assert.Equal(-1d,   locEval("pos2  + neg3"));
+			assert.Equal(-5d,   locEval("neg2  + neg3"));
+			assert.Equal( 1d,   locEval("neg2  + pos3"));
+			assert.Equal( 5d,   locEval("pos2  + pos3"));
+
+			// sub
+			// assert.Equal(-1.5d, locEval("pos2 - pos35"));
+			assert.Equal( 1d,   locEval("neg2 - neg3"));
+			assert.Equal( 5d,   locEval("pos2 - neg3"));
+			assert.Equal(-5d,   locEval("neg2 - pos3"));
+			assert.Equal(-1d,   locEval("pos2 - pos3"));
+
+			// mul
+			assert.Equal( 6d, locEval("pos2 * pos3"));
+			assert.Equal( 6d, locEval("neg2 * neg3"));
+			assert.Equal(-6d, locEval("pos2 * neg3"));
+			assert.Equal(-6d, locEval("neg2 * pos3"));
+			assert.Equal( 6d, locEval("pos2 * pos3"));
+			assert.Equal( 0d, locEval("pos2 * zero"));
+
+			// div
+			assert.Equal( 1.5,    locEval("pos3 / pos2"));
+			assert.Equal( 1.5,    locEval("neg3 / neg2"));
+			assert.Equal(-1.5,    locEval("pos3 / neg2"));
+			assert.Equal(-1.5,    locEval("neg3 / pos2"));
+			assert.Equal( 1.5,    locEval("pos3 / pos2"));
+			assert.Equal(ERRDIV0, locEval("pos3 / zero"));
+			assert.Equal(ERRNAN,  locEval("zero / zero"));
+			assert.Equal(0d,      locEval("zero / pos5"));
+
+
+			// mod
+			assert.Equal( 1d,    locEval("pos3 % pos2"));
+			assert.Equal(-1d,    locEval("neg3 % neg2"));
+			assert.Equal( 1d,    locEval("pos3 % neg2"));
+			assert.Equal(-1d,    locEval("neg3 % pos2"));
+			assert.Equal( 1d,    locEval("pos3 % pos2"));
+			assert.Equal(ERRNAN, locEval("pos3 % zero"));
+			assert.Equal(ERRNAN, locEval("zero % zero"));
+
+			// pow
+			assert.Equal( 8d,    locEval("pos2 ** pos3"));
+			assert.Equal(-0.125, locEval("neg2 ** neg3"));
+			assert.Equal( 0.125, locEval("pos2 ** neg3"));
+			assert.Equal(-8d,    locEval("neg2 ** pos3"));
+			assert.Equal( 8d,    locEval("pos2 ** pos3"));
+			assert.Equal( 1d,    locEval("pos2 ** zero"));
+			assert.Equal( 0d,    locEval("zero ** pos2"));
+			assert.Equal( 1d,    locEval("zero ** zero"));
+			assert.Equal( 0d,    locEval("zero ** pos1"));
+		};
+
 		//TODO: Add more test to Access locals
 		//TODO: Function calls
 		//TODO: Op presedence

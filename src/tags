@@ -3,7 +3,7 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 AND	core/Tokenizer.cs	/^		const string AND = "and", OR = "or";$/;"	f	class:Abacus.Tokenizer	file:
 Abacus	core/Assert.cs	/^namespace Abacus {$/;"	n
 Abacus	core/BinaryOperator.cs	/^namespace Abacus {$/;"	n
@@ -30,6 +30,7 @@ And	core/TokenKind.cs	/^        And,$/;"	e	enum:Abacus.TokenKind	file:
 AndExpression	core/SyntaxNode.cs	/^		public AndExpression(SyntaxNode lhs, SyntaxNode rhs) {$/;"	m	class:Abacus.AndExpression
 AndExpression	core/SyntaxNode.cs	/^	public class AndExpression : SyntaxNode {$/;"	c	namespace:Abacus
 Argv	core/SyntaxNode.cs	/^		public readonly SyntaxNode[] Argv;$/;"	f	class:Abacus.FuncCall
+ArrToStr	core/Utils.cs	/^		public static string ArrToStr(object[] arr) {$/;"	m	class:Abacus.Utils
 Arrow	core/TokenKind.cs	/^        Arrow,$/;"	e	enum:Abacus.TokenKind	file:
 Assert	core/Assert.cs	/^	public class Assert {$/;"	c	namespace:Abacus
 AssignOp	core/TokenKind.cs	/^        AssignOp,$/;"	e	enum:Abacus.TokenKind	file:
@@ -45,14 +46,15 @@ COMMA	core/Tokenizer.cs	/^		const char COLON = ':', SEMI = ';', COMMA = ',';$/;"
 CR	core/Tokenizer.cs	/^		const char LF = '\\n', CR= '\\r', SPACE = ' ', HT = '\\t',$/;"	f	class:Abacus.Tokenizer	file:
 CallCmp	core/SyntaxWalker.cs	/^		Expression CallCmp(SyntaxNode lhs, SyntaxNode rhs) $/;"	m	class:Abacus.SyntaxWalker	file:
 CanReduce	core/SyntaxNode.cs	/^		public virtual bool CanReduce => false;$/;"	f	class:Abacus.SyntaxNode
-CantPrintLinqTree	core/Interpreter.cs	/^		static void CantPrintLinqTree() {$/;"	m	class:Abacus.Interpreter	file:
+CantPrintLinqTree	core/Utils.cs	/^		static void CantPrintLinqTree() {$/;"	m	class:Abacus.Utils	file:
 CellOp	core/TokenKind.cs	/^        CellOp,$/;"	e	enum:Abacus.TokenKind	file:
 Cmp	core/SyntaxWalker.cs	/^		Expression Cmp(Expression lhs, Expression rhs)$/;"	m	class:Abacus.SyntaxWalker	file:
 ColNo	core/Token.cs	/^		public readonly int ColNo, LineNo;$/;"	f	class:Abacus.Token
 Colon	core/TokenKind.cs	/^        Colon,$/;"	e	enum:Abacus.TokenKind	file:
 Comma	core/TokenKind.cs	/^        Comma,$/;"	e	enum:Abacus.TokenKind	file:
 Comment	core/TokenKind.cs	/^        Comment = 1,$/;"	e	enum:Abacus.TokenKind	file:
-Compile	core/Interpreter.cs	/^		static Func<object[], object> Compile($/;"	m	class:Abacus.Interpreter	file:
+Compile	core/Interpreter.cs	/^		static Func<string[], object[], object> Compile($/;"	m	class:Abacus.Interpreter	file:
+Compile	core/SyntaxWalker.cs	/^		public Func<string[], object[], object> Compile(SyntaxTree tree) {$/;"	m	class:Abacus.SyntaxWalker
 Concat	core/BinaryOperator.cs	/^			Concat = new BinOp(Operator.Concat, 1),$/;"	f	struct:Abacus.BinaryOperator
 Concat	core/Operator.cs	/^        Concat$/;"	e	enum:Abacus.Operator	file:
 Concat	core/TokenKind.cs	/^        Concat,$/;"	e	enum:Abacus.TokenKind	file:
@@ -69,6 +71,8 @@ DQ	core/Tokenizer.cs	/^				   SQ = '\\'', DQ = '\\"',$/;"	f	class:Abacus.Tokeniz
 DbgDieIf	core/Error.cs	/^		public static void DbgDieIf(bool cnd, string msg){ $/;"	m	class:Abacus.Error
 DbgEnsure	core/Assert.cs	/^		public static void DbgEnsure(string name, object val) {$/;"	m	class:Abacus.Assert
 DbgEnsureLhsRhs	core/Assert.cs	/^		public static void DbgEnsureLhsRhs(SyntaxNode lhs, SyntaxNode rhs){$/;"	m	class:Abacus.Assert
+DbgEnsureMerge	core/Interpreter.cs	/^		static void DbgEnsureMerge(string[] localNames, object[]locals) {$/;"	m	class:Abacus.Interpreter	file:
+DbgPrint	core/Utils.cs	/^		public static void DbgPrint(object msg) {$/;"	m	class:Abacus.Utils
 DbgPrintCmp	core/SyntaxWalker.cs	/^		static void DbgPrintCmp(object lhs, object rhs) {$/;"	m	class:Abacus.SyntaxWalker	file:
 Die	core/Error.cs	/^		public static void Die(string msg) {$/;"	m	class:Abacus.Error
 DieCursorDidntMove	core/Tokenizer.cs	/^		void DieCursorDidntMove() {$/;"	m	class:Abacus.Tokenizer	file:
@@ -98,8 +102,7 @@ EatUntilNextMatch	core/Tokenizer.cs	/^		void EatUntilNextMatch(char ch) {$/;"	m	
 EatWhileNextMatch	core/Tokenizer.cs	/^		void EatWhileNextMatch(char ch) {$/;"	m	class:Abacus.Tokenizer	file:
 Empty	core/SyntaxNode.cs	/^		public readonly static SyntaxNode Empty = new Const(null);$/;"	f	class:Abacus.SyntaxNode
 Ensure	core/Assert.cs	/^		public static void Ensure(string name, object val) {$/;"	m	class:Abacus.Assert
-EnsureBuiltins	core/Interpreter.cs	/^		static void EnsureBuiltins (object[] locals) {$/;"	m	class:Abacus.Interpreter	file:
-EnsurePreConditions	core/Interpreter.cs	/^		static void EnsurePreConditions($/;"	m	class:Abacus.Interpreter	file:
+EnsureEvalArgs	core/Interpreter.cs	/^		static void EnsureEvalArgs($/;"	m	class:Abacus.Interpreter	file:
 EnsureStr	core/Assert.cs	/^		public static void EnsureStr(string name, string val) {$/;"	m	class:Abacus.Assert
 Eq	core/BinaryOperator.cs	/^			Eq  = new BinOp(Operator.Equal, 16),$/;"	f	struct:Abacus.BinaryOperator
 Equal	core/Operator.cs	/^        Equal,$/;"	e	enum:Abacus.Operator	file:
@@ -120,7 +123,7 @@ Floor	core/SyntaxWalker.cs	/^		Expression Floor(Expression lhs, Expression rhs)$
 FloorDiv	core/BinaryOperator.cs	/^			FloorDiv = new BinOp(Operator.FloorDiv, 2),$/;"	f	struct:Abacus.BinaryOperator
 FloorDiv	core/Operator.cs	/^        FloorDiv, \/\/DIV$/;"	e	enum:Abacus.Operator	file:
 FloorDiv	core/TokenKind.cs	/^		FloorDiv=17,$/;"	e	enum:Abacus.TokenKind	file:
-Formulas	test/FormulasFixture.cs	/^	class Formulas {$/;"	c	namespace:Abacus.Test
+FormulasFixture	test/FormulasFixture.cs	/^	class FormulasFixture {$/;"	c	namespace:Abacus.Test
 FuncCall	core/SyntaxNode.cs	/^		public FuncCall($/;"	m	class:Abacus.FuncCall
 FuncCall	core/SyntaxNode.cs	/^	public class FuncCall : SyntaxNode {$/;"	c	namespace:Abacus
 FuncName	core/SyntaxNode.cs	/^		public readonly string         FuncName;$/;"	f	class:Abacus.FuncCall
@@ -184,7 +187,6 @@ Lhs	core/SyntaxNode.cs	/^		public readonly SyntaxNode Lhs, Rhs;$/;"	f	class:Abac
 Lhs	core/SyntaxNode.cs	/^		public readonly SyntaxNode Lhs, Rhs;$/;"	f	class:Abacus.NotEqualExpression
 Lhs	core/SyntaxNode.cs	/^		public readonly SyntaxNode Lhs, Rhs;$/;"	f	class:Abacus.OrExpression
 LineNo	core/Token.cs	/^		public readonly int ColNo, LineNo;$/;"	f	class:Abacus.Token
-Locals	core/SyntaxWalker.cs	/^		ParameterExpression Locals;$/;"	f	class:Abacus.SyntaxWalker	file:
 Lt	core/BinaryOperator.cs	/^			Lt  = new BinOp(Operator.LessThan, 8),$/;"	f	struct:Abacus.BinaryOperator
 Lte	core/BinaryOperator.cs	/^			Lte = new BinOp(Operator.LessThanOrEqual, 8),$/;"	f	struct:Abacus.BinaryOperator
 MAX_SAME_PEEK_COUNT	core/Parser.cs	/^		const int MAX_SAME_PEEK_COUNT = 300;$/;"	f	class:Abacus.Parser	file:
@@ -236,7 +238,6 @@ OrExpression	core/SyntaxNode.cs	/^	public class OrExpression : SyntaxNode {$/;"	
 PLS	core/Tokenizer.cs	/^		const char PLS  = '+', MIN = '-',$/;"	f	class:Abacus.Tokenizer	file:
 POW	core/SyntaxWalker.cs	/^		static readonly MethodInfo POW = WALKER_TYPE.GetMethod($/;"	f	class:Abacus.SyntaxWalker	file:
 POW	core/Tokenizer.cs	/^				   STAR = '*', POW = '^';$/;"	f	class:Abacus.Tokenizer	file:
-PRIVATE	core/SyntaxWalker.cs	/^		static readonly BF PRIVATE = $/;"	f	class:Abacus.SyntaxWalker	file:
 ParenExpression	core/SyntaxNode.cs	/^		public ParenExpression(SyntaxNode expr) {$/;"	m	class:Abacus.ParenExpression
 ParenExpression	core/SyntaxNode.cs	/^	public class ParenExpression : SyntaxNode {$/;"	c	namespace:Abacus
 Parse	core/Parser.cs	/^		public SyntaxTree Parse() {$/;"	m	class:Abacus.Parser
@@ -272,7 +273,7 @@ Precedence	core/BinaryOperator.cs	/^        public int Precedence;$/;"	f	struct:
 PrefixDecrement	core/TokenKind.cs	/^        PrefixDecrement,$/;"	e	enum:Abacus.TokenKind	file:
 PrefixIncrement	core/TokenKind.cs	/^        PrefixIncrement,$/;"	e	enum:Abacus.TokenKind	file:
 PreventPeekOverflow	core/Parser.cs	/^		void PreventPeekOverflow(Token token) {$/;"	m	class:Abacus.Parser	file:
-PrintLinqTree	core/Interpreter.cs	/^		static void PrintLinqTree(Expression tree) {$/;"	m	class:Abacus.Interpreter	file:
+PrintLinqTree	core/Utils.cs	/^		public static void PrintLinqTree(Expression tree) {$/;"	m	class:Abacus.Utils
 RBRACKET	core/Tokenizer.cs	/^				   LBRACKET = '[', RBRACKET = ']';$/;"	f	class:Abacus.Tokenizer	file:
 RPAREN	core/Tokenizer.cs	/^		const char LPAREN   = '(', RPAREN   = ')',$/;"	f	class:Abacus.Tokenizer	file:
 RangeOp	core/TokenKind.cs	/^        RangeOp,$/;"	e	enum:Abacus.TokenKind	file:
@@ -302,9 +303,9 @@ SQ	core/Tokenizer.cs	/^				   SQ = '\\'', DQ = '\\"',$/;"	f	class:Abacus.Tokeniz
 STAPRIVATE	core/SyntaxWalker.cs	/^		static readonly BF STAPRIVATE = $/;"	f	class:Abacus.SyntaxWalker	file:
 STAR	core/Tokenizer.cs	/^				   STAR = '*', POW = '^';$/;"	f	class:Abacus.Tokenizer	file:
 STD	core/Parser.cs	/^		readonly SyntaxNode STD      = new Const(null);$/;"	f	class:Abacus.Parser	file:
+SanitizeNumLocals	core/Utils.cs	/^		public static object [] SanitizeNumLocals(object [] locals) {$/;"	m	class:Abacus.Utils
 SemiColon	core/TokenKind.cs	/^        SemiColon,$/;"	e	enum:Abacus.TokenKind	file:
 SingleQuoteExpected	core/Tokenizer.cs	/^        string SingleQuoteExpected () => Expected("Single quote");$/;"	m	class:Abacus.Tokenizer	file:
-StrArr	core/SyntaxWalker.cs	/^		static string StrArr(object[] arr){$/;"	m	class:Abacus.SyntaxWalker	file:
 StringLiteral	core/TokenKind.cs	/^        StringLiteral  = 1011,$/;"	e	enum:Abacus.TokenKind	file:
 Sub	core/BinaryOperator.cs	/^			Sub = new BinOp(Operator.Sub, 1),$/;"	f	struct:Abacus.BinaryOperator
 Sub	core/Operator.cs	/^        Sub,$/;"	e	enum:Abacus.Operator	file:
@@ -312,9 +313,7 @@ Sub	core/TokenKind.cs	/^        Sub=12,$/;"	e	enum:Abacus.TokenKind	file:
 SubStr	core/Tokenizer.cs	/^		string SubStr(int from, int to) {$/;"	m	class:Abacus.Tokenizer	file:
 SyntaxNode	core/SyntaxNode.cs	/^	public abstract class SyntaxNode {$/;"	c	namespace:Abacus
 SyntaxTree	core/SyntaxNode.cs	/^	public class SyntaxTree : SyntaxNode { $/;"	c	namespace:Abacus
-SyntaxWalker	core/SyntaxWalker.cs	/^		public SyntaxWalker(string[] localNames) {$/;"	m	class:Abacus.SyntaxWalker
 SyntaxWalker	core/SyntaxWalker.cs	/^    public class SyntaxWalker {$/;"	c	namespace:Abacus
-THIS	core/SyntaxWalker.cs	/^		readonly Expression THIS;$/;"	f	class:Abacus.SyntaxWalker	file:
 TILDE	core/Tokenizer.cs	/^				   TILDE = '~',$/;"	f	class:Abacus.Tokenizer	file:
 TOB	core/SyntaxWalker.cs	/^		static readonly MethodInfo TOB = WALKER_TYPE.GetMethod($/;"	f	class:Abacus.SyntaxWalker	file:
 TRUNC	core/SyntaxWalker.cs	/^		static readonly MethodInfo TRUNC = WALKER_TYPE.GetMethod($/;"	f	class:Abacus.SyntaxWalker	file:
@@ -367,7 +366,7 @@ Val	core/SyntaxNode.cs	/^		public readonly object Val;$/;"	f	class:Abacus.Const
 WALKER_TYPE	core/SyntaxWalker.cs	/^		static readonly Type WALKER_TYPE = typeof(SyntaxWalker);$/;"	f	class:Abacus.SyntaxWalker	file:
 Walk	core/SyntaxWalker.cs	/^        public Expression Walk(BinExpression expr) {$/;"	m	class:Abacus.SyntaxWalker
 Walk	core/SyntaxWalker.cs	/^        public Expression Walk(GetLocal expr) {$/;"	m	class:Abacus.SyntaxWalker
-Walk	core/SyntaxWalker.cs	/^        public Expression Walk(SyntaxTree rootNode, ParameterExpression argv) {$/;"	m	class:Abacus.SyntaxWalker
+Walk	core/SyntaxWalker.cs	/^        public Expression Walk(SyntaxTree rootNode) {$/;"	m	class:Abacus.SyntaxWalker
 Walk	core/SyntaxWalker.cs	/^        public Expression Walk(UnaryExpression expr) {$/;"	m	class:Abacus.SyntaxWalker
 Watch	core/Parser.cs	/^		void Watch(object aditionalInfo = null) {$/;"	m	class:Abacus.Parser	file:
 Watch	core/Tokenizer.cs	/^		void Watch(object aditionalInfo = null) {$/;"	m	class:Abacus.Tokenizer	file:
@@ -377,7 +376,7 @@ WhiteSpace	core/TokenKind.cs	/^        WhiteSpace = 2,$/;"	e	enum:Abacus.TokenKi
 WordTerminator	core/Tokenizer.cs	/^        bool WordTerminator(char ch) {$/;"	m	class:Abacus.Tokenizer	file:
 ZERO	core/SyntaxWalker.cs	/^			ZERO = Constant(0),$/;"	f	class:Abacus.SyntaxWalker	file:
 __Cmp	core/SyntaxWalker.cs	/^		static int __Cmp(object lhs, object rhs) {$/;"	m	class:Abacus.SyntaxWalker	file:
-__GetLocal	core/SyntaxWalker.cs	/^		object __GetLocal(string name, object[] locals) {$/;"	m	class:Abacus.SyntaxWalker	file:
+__GetLocal	core/SyntaxWalker.cs	/^		static object __GetLocal($/;"	m	class:Abacus.SyntaxWalker	file:
 __Pow	core/SyntaxWalker.cs	/^		static double __Pow(double num, double pow) $/;"	m	class:Abacus.SyntaxWalker	file:
 __ToBln	core/SyntaxWalker.cs	/^		static bool __ToBln(object obj) {$/;"	m	class:Abacus.SyntaxWalker	file:
 __Trunc	core/SyntaxWalker.cs	/^		static double __Trunc(double num, double div)$/;"	m	class:Abacus.SyntaxWalker	file:
@@ -393,15 +392,17 @@ _lastPeekPos	core/Parser.cs	/^		int _lastPeekPos, _samePeekCount;$/;"	f	class:Ab
 _lastToken	core/Tokenizer.cs	/^		Token _lastToken;$/;"	f	class:Abacus.Tokenizer	file:
 _lineNo	core/Tokenizer.cs	/^		   	_lineNo      =  1;$/;"	f	class:Abacus.Tokenizer	file:
 _localNames	core/Parser.cs	/^		readonly string[] _localNames;$/;"	f	class:Abacus.Parser	file:
-_localNames	core/SyntaxWalker.cs	/^		readonly string[] _localNames;$/;"	f	class:Abacus.SyntaxWalker	file:
+_localNames	core/SyntaxWalker.cs	/^		ParameterExpression _localNames, _locals;$/;"	f	class:Abacus.SyntaxWalker	file:
+_locals	core/SyntaxWalker.cs	/^		ParameterExpression _localNames, _locals;$/;"	f	class:Abacus.SyntaxWalker	file:
 _samePeekCount	core/Parser.cs	/^		int _lastPeekPos, _samePeekCount;$/;"	f	class:Abacus.Parser	file:
 _stream	core/Parser.cs	/^		readonly Token[] _stream;$/;"	f	class:Abacus.Parser	file:
+access_locals	test/FormulasFixture.cs	/^		_ access_locals = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
 and_operator	test/TokenizerFixture.cs	/^		_ and_operator = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:
-basic_comparisons	test/FormulasFixture.cs	/^		_ basic_comparisons = assert => {$/;"	f	class:Abacus.Test.Formulas	file:
-basic_logic	test/FormulasFixture.cs	/^		_ basic_logic = assert => {$/;"	f	class:Abacus.Test.Formulas	file:
-basic_math	test/FormulasFixture.cs	/^		_ basic_math = assert => {$/;"	f	class:Abacus.Test.Formulas	file:
+basic_comparisons	test/FormulasFixture.cs	/^		_ basic_comparisons = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
+basic_logic	test/FormulasFixture.cs	/^		_ basic_logic = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
+basic_math	test/FormulasFixture.cs	/^		_ basic_math = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
 empty_string	test/TokenizerFixture.cs	/^		_ empty_string = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:
-equality_coercions_and_fun_with_casts	test/FormulasFixture.cs	/^		_ equality_coercions_and_fun_with_casts = assert => {$/;"	f	class:Abacus.Test.Formulas	file:
+equality_coercions_and_fun_with_casts	test/FormulasFixture.cs	/^		_ equality_coercions_and_fun_with_casts = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
 expr	core/SyntaxWalker.cs	/^		Expression Bln(Expression expr)$/;"	f	class:Abacus.SyntaxWalker	file:
 expr	core/SyntaxWalker.cs	/^		Expression Dbl(Expression expr)$/;"	f	class:Abacus.SyntaxWalker	file:
 expr	core/SyntaxWalker.cs	/^		Expression Obj(Expression expr)$/;"	f	class:Abacus.SyntaxWalker	file:
@@ -417,6 +418,7 @@ expr	core/SyntaxWalker.cs	/^        public Expression Walk(NotExpression expr)$/
 expr	core/SyntaxWalker.cs	/^        public Expression Walk(OrExpression expr)$/;"	f	class:Abacus.SyntaxWalker
 msg	core/Error.cs	/^		public static void Die(object msg) => Die(msg?.ToString() ?? "null");$/;"	f	class:Abacus.Error
 paren_unary_minus	test/TokenizerFixture.cs	/^		_ paren_unary_minus = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:
+sanitize_num_locals	test/FormulasFixture.cs	/^		_ sanitize_num_locals = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
 should_ignore_LF	test/TokenizerFixture.cs	/^		_ should_ignore_LF = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:
 should_ignore_white_space	test/TokenizerFixture.cs	/^		_ should_ignore_white_space = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:
 unary_minus	test/TokenizerFixture.cs	/^		_ unary_minus = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:

@@ -7,6 +7,7 @@ namespace Abacus.Test {
 	using static System.Linq.Expressions.Expression;
 	using static Interpreter;
 	using static System.Console;
+	using static System.DateTime;
 	using _ = System.Action<Contest.Core.Runner>;
 
 
@@ -187,6 +188,28 @@ namespace Abacus.Test {
 			assert.IsTrue(Eval("null = false"));
 			assert.IsTrue(Eval("null = 0"));
 			assert.IsTrue(Eval("null = ''"));
+		};
+
+
+		_ sanitize_num_locals = assert => {
+			var locals = new object [] {1, 2.3, 4, 3.14};
+			var sanitized = SanitizeNumLocals(locals);
+			for(int i = 0; i < sanitized.Length; ++i)
+				assert.Equal(typeof(double), sanitized[i].GetType());
+
+			// Contains numeric values at odd indexes 
+			// and non numeric at the even ones.
+			var mixedLocals = new object [] {
+			   	1, false, 4.5, "fruli", 3.14, Now 
+			};
+			sanitized = SanitizeNumLocals(mixedLocals);
+			for(int i = 0; i < sanitized.Length; ++i) {
+				WriteLine(sanitized[i]);
+				if (i % 2 == 0)
+					assert.Equal(typeof(double), sanitized[i].GetType());
+				else
+					assert.NotEqual(typeof(double), sanitized[i].GetType());
+			}
 		};
 
 		_ access_locals = assert => {

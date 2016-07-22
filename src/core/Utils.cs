@@ -7,8 +7,47 @@ namespace Abacus {
 	using System.Collections;
 	using System.Collections.Generic;
 	using static System.Console;
+	using static System.Convert;
+	using static Abacus.Assert;
 
 	public static class Utils {
+
+		public static bool IsNum(object val) {
+			if (val == null)
+				return false;
+
+			//Don't optimize this method by hand, the compiler will that.
+			//TypeCode typeCode = Type.GetTypeCode(type);
+			//The TypeCode of numerical types are between
+			//SByte (5) and Decimal (15).
+			//  return (int)typeCode >= 5 && (int)typeCode <= 15;
+			var type = val.GetType();
+			switch (Type.GetTypeCode(type)) {
+				case TypeCode.Byte:
+				case TypeCode.SByte:
+				case TypeCode.UInt16:
+				case TypeCode.UInt32:
+				case TypeCode.UInt64:
+				case TypeCode.Int16:
+				case TypeCode.Int32:
+				case TypeCode.Int64:
+				case TypeCode.Decimal:
+				case TypeCode.Double:
+				case TypeCode.Single:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		public static object [] SanitizeNumLocals(object [] locals) {
+			Ensure("locals", locals);
+			var res  = new object[locals.Length];
+			for(int i = 0; i < locals.Length; ++i) {
+				res[i] = IsNum(locals[i]) ? ToDouble(locals[i]) : locals[i];
+			}
+			return res;
+		}
 
 		public static string ArrToStr(object[] arr) {
 			return arr == null 

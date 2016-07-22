@@ -294,6 +294,40 @@ namespace Abacus.Test {
 			assert.Equal( 0d,    locEval("zero ** pos1"));
 		};
 
+		_ basic_comparisons_with_locals = assert => {
+
+			var names  = new [] { 
+				"pos1", "pos2", "pos3", "pos4", "zero",	"stre" 
+			};
+
+			var locals = new object[] { 
+				1, 2, 3, 4, 0, "" 
+			};
+
+			Func<string, object> locEval = src =>
+					Eval(src, names, locals);
+
+			assert.IsTrue(locEval("pos1 =  pos1"));
+			assert.IsTrue(locEval("pos2 <> pos3"));
+			assert.IsTrue(locEval("pos2 >  pos1"));
+			assert.IsTrue(locEval("pos2 >= pos1"));
+			assert.IsTrue(locEval("pos2 >= pos2"));
+			assert.IsTrue(locEval("pos2 <= pos3"));
+			assert.IsTrue(locEval("pos3 <= pos3"));
+			assert.IsTrue(locEval("pos2 <  pos3"));
+			assert.IsTrue(locEval("stre = stre"));
+
+			assert.IsFalse(locEval("pos2 =  pos1"));
+			assert.IsFalse(locEval("pos3 <> pos3"));
+			assert.IsFalse(locEval("pos1 >  pos1"));
+			assert.IsFalse(locEval("zero >= pos1"));
+			assert.IsFalse(locEval("pos1 >= pos2"));
+			assert.IsFalse(locEval("pos4 <= pos3"));
+			assert.IsFalse(locEval("pos4 <= pos3"));
+			assert.IsFalse(locEval("pos4 <  pos3"));
+
+		};
+
 		//TODO: Add more test to Access locals
 		//TODO: Function calls
 		//TODO: Op presedence

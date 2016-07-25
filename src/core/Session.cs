@@ -72,14 +72,8 @@ namespace Abacus {
 		}
 
 		/// Creates a hash to represent the combination of src + locals.
-		static int CreateHash(string src, object[]locals) {
-			var hash = GetHashCode<object>(locals) * 23 + src.GetHashCode();
-			WriteLine("create hash");
-			WriteLine(src);
-			WriteLine(ArrToStr(locals));
-			WriteLine(hash);
-			return hash;
-		}
+		static int CreateHash(string src, object[]locals) =>
+			 GetHashCode<object>(locals) * 23 + src.GetHashCode();
 
 		/// Caches the result of an execution.
 		public void Cache(string src, object[] locals, object res) {
@@ -88,7 +82,6 @@ namespace Abacus {
 
 			var hash = CreateHash(src, locals);
 			_resCache[hash] = new CacheEntry(src, locals, res);
-
 		}
 
 		/// It tries to get a cached result based on src and locals.

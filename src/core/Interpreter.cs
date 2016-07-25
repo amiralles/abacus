@@ -52,17 +52,15 @@ namespace Abacus {
 			// are side effects free, 
 			// same session + same src + same locals == same res.
 			object res = null;
+			//TODO: Sanitize localNames make sure there is no 
+			//      keyword in there.
+			localNames = Merge<string>(BuiltinLocals.NAMES, localNames);
+			locals     = Merge<object>(BuiltinLocals.VALUES, locals);
+			DbgEnsureMerge(localNames, locals);
 			if (session.TryGetRes(src, locals, ref res))
 				return res;
 
 			try {
-
-				//TODO: Sanitize localNames make sure there is no 
-				//      keyword in there.
-				localNames = Merge<string>(BuiltinLocals.NAMES, localNames);
-				locals     = Merge<object>(BuiltinLocals.VALUES, locals);
-				DbgEnsureMerge(localNames, locals);
-
 				var fn  = session.GetCompiled(src) ?? 
 					      Compile(ref session, src, localNames);
 

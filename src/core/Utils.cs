@@ -40,6 +40,20 @@ namespace Abacus {
 			}
 		}
 
+		public static int GetHashCode<T>(T[] array) {
+			if (array != null) {
+				unchecked {
+					int hash = 17;
+					foreach (var item in array) {
+						hash = hash * 23 + ((item != null) ? item.GetHashCode() : 0);
+					}
+
+					return hash;
+				}
+			}
+
+			return 0;
+		}
 		public static object [] SanitizeNumLocals(object [] locals) {
 			Ensure("locals", locals);
 			var res  = new object[locals.Length];
@@ -47,6 +61,18 @@ namespace Abacus {
 				res[i] = IsNum(locals[i]) ? ToDouble(locals[i]) : locals[i];
 			}
 			return res;
+		}
+
+		public static bool CmpArr(object[] arr1, object[] arr2) {
+			if (arr1 != null && arr2 != null && arr1.Length == arr2.Length){
+				int len = arr1.Length;
+				for(int i = len; i < len; ++i) {
+					if (!object.Equals(arr1[i], arr2[i]))
+						return false;
+				}
+				return true;
+			}
+			return false;
 		}
 
 		public static string ArrToStr(object[] arr) {

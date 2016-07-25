@@ -379,19 +379,33 @@ namespace Abacus.Test {
 			}
 		};
 
-		_ cache_hits = assert => {
+		_ compile_cache = assert => {
 			var sess   = new Session(1);
 			var names  = new [] {"a", "b"}; 
-			var locals = new object[]{1, 2};
 
-			for (int i=0; i < 1000; ++i)
-				assert.Equal(3d, Eval("a+b", names, locals, ref sess));
+			for (int i=0; i < 100; ++i) {
+				// We must change locals to avoid run-time caching.
+				var locals = new object[] { i, 2 };
+				assert.Equal(i + 2d, Eval("a+b", names, locals, ref sess));
+			}
 
 			assert.Equal(1, sess.CacheMisses, "wrong number of cache misses");
-			assert.Equal(999, sess.CacheHits,   "wrong number of cache hits");
+			assert.Equal(99, sess.CacheHits,   "wrong number of cache hits");
 		};
 
-		// TODO: Caches.
+
+		_ run_time_cache = assert => {
+			var sess   = new Session(1);
+			var names  = new [] {"a", "b"}; 
+			var locals = new object[] {1, 2};
+
+			for (int i=0; i < 100; ++i)
+				assert.Equal(3d, Eval("a+b", names, locals, ref sess));
+
+			assert.Equal(1,  sess.ResCacheMisses, "wrong number of misses");
+			assert.Equal(99, sess.ResCacheHits,   "wrong number of hits");
+		};
+
 		// TODO: Function calls with recievers.
 		// TODO: Op presedence
 	}

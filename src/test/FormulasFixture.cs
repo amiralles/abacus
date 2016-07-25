@@ -230,8 +230,9 @@ namespace Abacus.Test {
 				3.5
 			};
 
+			var sess = new Session(123);
 			Func<string, object> locEval = src =>
-					Eval(src, names, locals);
+					Eval(src, names, locals, ref sess);
 
 			// add
 			assert.Equal( 5d,   locEval("pos25 + pos25"));
@@ -298,8 +299,9 @@ namespace Abacus.Test {
 				1, 2, 3, 4, 0, "" 
 			};
 
+			var sess = new Session(456);
 			Func<string, object> locEval = src =>
-					Eval(src, names, locals);
+					Eval(src, names, locals, ref sess);
 
 			assert.IsTrue(locEval("pos1 =  pos1"));
 			assert.IsTrue(locEval("pos2 <> pos3"));
@@ -331,8 +333,10 @@ namespace Abacus.Test {
 				1, 2, 0
 			};
 
+			var sess = new Session(789);
 			Func<string, object> locEval = src =>
-					Eval(src, names, locals);
+					Eval(src, names, locals, ref sess);
+
 			// And
 			assert.IsTrue(locEval("pos1 and pos1"));
 			assert.IsTrue(locEval("pos1=pos1 and pos2=pos2"));
@@ -373,6 +377,18 @@ namespace Abacus.Test {
 				// avoid cross test failures.
 				Interpreter.OnDispatchCall = bak;
 			}
+		};
+
+		_ cache_hits = assert => {
+			var sess   = new Session(1);
+			var names  = new [] {"a", "b"}; 
+			var locals = new object[]{1, 2};
+
+			for (int i=0; i < 1000; ++i)
+				assert.Equal(3d, Eval("a+b", names, locals, ref sess));
+
+			assert.Equal(1, sess.CacheMisses, "wrong number of cache misses");
+			assert.Equal(999, sess.CacheHits,   "wrong number of cache hits");
 		};
 
 		// TODO: Caches.

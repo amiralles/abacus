@@ -12,6 +12,7 @@ namespace Abacus {
 	using static System.Console;
 	using static System.Linq.Expressions.Expression;
 	using BF = System.Reflection.BindingFlags;
+	using FN = System.Func<string[], object[], object>;
 
 	public class Interpreter {
 		public static readonly double Infinity = double.PositiveInfinity;
@@ -27,39 +28,45 @@ namespace Abacus {
 
 
 		static readonly Type STDLIB = typeof(StdLib);
+
 		static BF STAPUBCI = BF.Static | BF.DeclaredOnly | 
 						 	 BF.InvokeMethod | BF.IgnoreCase | BF.Public;
 
 		public static object Eval(string src) {
 			var localNames = new string[0];
 			var locals     = new string[0];
-			return Eval(src, localNames, locals);
+			var session    = new Session();
+			return Eval(src, localNames, locals, ref session);
 		}
 
-		// TODO: Add session (for caching purposes).
 		// TODO: Add OnSyntaxtErr handler.
 		// TODO: Add OnError handler.
 		public static object Eval(
-				string src, string[] localNames, object[] locals) {
+				string src, string[] localNames, object[] locals, 
+				ref Session session) {
 
 			locals = SanitizeNumLocals(locals);
 			EnsureEvalArgs(src, localNames, locals);
 
-			//TODO: If same session, same locals, same src, we don't
-			//      have to do anything, just return the cached result.
-			//
-			//      If same session and same src, we don't have to compile
-			//      anything, just re-use a cached version of the previously
-			//      compiled function.
+			// Since state is inmutable and function calls 
+			// are side effects free, 
+			// same session + same src + same locals == same res.
+			object res = null;
+			if (session.TryGetRes(src, locals, ref res))
+				return res;
+
 			try {
 
-				//TODO: Sanitize localNames make sure there is no keyword in there.
+				//TODO: Sanitize localNames make sure there is no 
+				//      keyword in there.
 				localNames = Merge<string>(BuiltinLocals.NAMES, localNames);
 				locals     = Merge<object>(BuiltinLocals.VALUES, locals);
 				DbgEnsureMerge(localNames, locals);
 
-				var fn   = Compile(src, localNames);
-				var res  = fn(localNames, locals);
+				var fn  = session.GetCompiled(src) ?? 
+					      Compile(ref session, src, localNames);
+
+				res = fn(localNames, locals);
 
 				if (res is double) {
 					var dbl = (double) res;
@@ -69,10 +76,9 @@ namespace Abacus {
 						res = ERRNAN;
 				}
 
-				return res;
 			}
 			catch(DivideByZeroException) {
-				return ERRDIV0;
+				res = ERRDIV0;
 			}
 #if DEBUG
 			catch(Exception ex) {
@@ -80,19 +86,25 @@ namespace Abacus {
 				throw;
 #else
 			catch(Exception) {
-				return ERR;
+				res = ERR;
 #endif
 			}
+
+			session.Cache(src, locals, res);
+			return res;
 		}
 
 		static Func<string[], object[], object> Compile(
-				string src, string[] localNames) {
+				ref Session session, string src, string[] localNames) {
+
 			var tokenizer = new Tokenizer(src);
 			var parser    = new Parser(tokenizer, localNames);
 			var tree      = parser.Parse();
 
 			var walker  = new SyntaxWalker();
-			return walker.Compile(tree);
+			var fn      =  walker.Compile(tree);
+			session.CacheCompilation(src, fn);
+			return fn;
 		}
 
 

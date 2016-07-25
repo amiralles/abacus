@@ -346,13 +346,18 @@ namespace Abacus.Test {
 		_ run_time_cache = assert => {
 			var sess   = new Session(1);
 			var names  = new [] {"a", "b"}; 
-			var locals = new object[] {1, 2};
+			var locals1 = new object[] {1, 2};
+			var locals2 = new object[] {3, 4};
 
-			for (int i=0; i < 100; ++i)
-				assert.Equal(3d, Eval("a+b", names, locals, ref sess));
+			for (int i=0; i < 100; ++i) {
+				if (i % 2 == 0)
+					assert.Equal(3d, Eval("a+b", names, locals1, ref sess));
+				else
+					assert.Equal(7d, Eval("a+b", names, locals2, ref sess));
+			}
 
-			assert.Equal(1,  sess.ResCacheMisses, "wrong number of misses");
-			assert.Equal(99, sess.ResCacheHits,   "wrong number of hits");
+			assert.Equal(2,  sess.ResCacheMisses, "wrong number of misses");
+			assert.Equal(98, sess.ResCacheHits,   "wrong number of hits");
 		};
 
 		// TODO: Function calls with recievers.

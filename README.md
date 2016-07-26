@@ -14,6 +14,7 @@ You can look it as a small programming language that can be embeded into your ap
 ### Can I integrate my app API into the scripting language?
 Of course you can. In fact, that's an aspect where Abacus outperforms solutions
 that use "SQL tricks" and stuff like that.
+
 TODO: Show/Explain some use cases.
 
 ### Syntax and supported operations
@@ -78,6 +79,11 @@ go to tools and execute **./runtests.sh**. (Everything should be green).
 ```
 cd tools
 ./runtests.sh
+```
+
+### How to use it
+```
+	//TODO:
 ```
 
 ### How to plug your own functions

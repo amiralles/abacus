@@ -26,9 +26,9 @@ you called a function twice, within the same session and using the same argument
 Since you can plug your own functions, there is no way for the compiler to enforce that rule 
 on your code, but if you are not careful, you may end up with unexpected results. Let's look at some code:
 
-``` c
+``` cpp
 // Suppose you have some useful functions in this class and want to expose them to abacus. That's 
-//completely possible but there are some considerations.
+// completely possible but there are some considerations.
 
 class YourAwesomeLibrary {
 	// This it's OK. You can use functions like this one without any hassle.
@@ -36,7 +36,7 @@ class YourAwesomeLibrary {
 		return n1 + n2
 	}
 	
-	// This is not OK, and if your code depends on functions like this, you'll be up for surprises.
+	// This is NOT OK, and if your code depends on functions like this, you'll be up for surprises.
 	public int IncCount(int num) {
 		_count+=num;
 		return count;

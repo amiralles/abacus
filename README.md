@@ -58,7 +58,7 @@ Or you can run ./dbgbuild.sh for the debug build or ./build.sh for the release o
 
 
 ### How to test
-Abacus is tested using the contest test framework, so you don't hace to install anything, just
+Abacus is tested using the contest testing framework, so you don't hace to install anything, just
 go to tools and execute ./runtests.sh. (Everything should be green).
 ```
 cd tools

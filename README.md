@@ -44,7 +44,8 @@ int RemoveLastAndCount() {
 
 ### How to build
 On linux and the mac, you can build it using the mono compiler by running any of these commands.
-(If you are running on windows, replce *mcs* with *csc*, it should work rightaway).
+
+(If you are running on windows, replce *mcs* with *csc*, it should work just like that).
 ```
 # debug build
 mcs src/core/*.cs  -t:library -out:bin/Abacus.dll -define:DEBUG

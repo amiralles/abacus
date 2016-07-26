@@ -63,12 +63,12 @@ mcs src/core/*.cs  -t:library -out:bin/Abacus.dll -define:DEBUG
 mcs src/core/*.cs  -t:library -out:bin/Abacus.dll
 ```
 
-Or you can run ./dbgbuild.sh for the debug build or ./build.sh for the release one. 
+Or you can run **./dbgbuild.sh** for the debug build or **./build.sh** for the release one. 
 
 
 ### How to test
-Abacus is tested using the contest testing framework, so you don't hace to install anything, just
-go to tools and execute ./runtests.sh. (Everything should be green).
+Abacus is tested using the contest testing framework, so you don't have to install anything, just
+go to tools and execute **./runtests.sh**. (Everything should be green).
 ```
 cd tools
 ./runtests.sh

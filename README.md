@@ -20,12 +20,11 @@ TODO: Show/Explain some use cases.
 TODO: Add the list of supported operators.
 
 
-### A note of caution about side effects
-Abacus assumes that functions calls are **side effects free**, which means, if
-you called **foo** twice, within the same session and using the same argument list,
- you will get the same result no matter what foo actualy does. 
+### Function calls and side effects
+Abacus assumes that function calls are **side effects free**, which means that if
+you called a function twice, within the same session and using the same argument list, you will get the same result no matter what the function actually does. 
 Since you can plug your own functions, there is no way for the compiler to enforce that rule 
-on your code, but if you are not careful in this respect, you may end up with unexpected results.
+on your code, but if you are not careful, you may end up with unexpected results.
 
 ```
 // This it's OK. You can use functions like this without hassle.

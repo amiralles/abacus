@@ -24,21 +24,25 @@ TODO: Add the list of supported operators.
 Abacus assumes that function calls are **side effects free**, which means that if
 you called a function twice, within the same session and using the same argument list, you will get the same result no matter what the function actually does. 
 Since you can plug your own functions, there is no way for the compiler to enforce that rule 
-on your code, but if you are not careful, you may end up with unexpected results.
+on your code, but if you are not careful, you may end up with unexpected results. Let's look at some code:
 
-```
-// This it's OK. You can use functions like this without hassle.
-int Sum(int n1, int n2) {
-	return n1 + n2
+``` c
+// Suppose you have some useful functions in this class and want to expose them to abacus. That's completely possible
+// but there are some considerations.
+
+class YourAwesomeLibrary {
+	// This it's OK. You can use functions like this one without any hassle.
+	public int Sum(int n1, int n2) {
+		return n1 + n2
+	}
+	
+	// This is not OK, and if your code depends on functions like this, you'll be up for surprises.
+	public int IncCount(int num) {
+		_count+=num;
+		return count;
+	}
 }
-
-// This is not OK, and if your code depends on functions like this, you'll be up for surprises.
-int IncCount(int num) {
-	_count+=num;
-	return count;
-}
-
-/* Let's look at this code:
+/* Let's see what happens when abacus executes the code:
 	_count=1;
 	IncCount(1); => 2
 	IncCount(1); => 2!
@@ -46,6 +50,8 @@ int IncCount(int num) {
 	At this point _count == 4, but without dropping the cache, abacus will always return 2!.
 	That's is why you should always use side effects free functions. (Or pure functions if you will).
 	
+	(Yes, you can drop the cache on each invocation and get away with state mutations, but performance wise, 
+	it'll be a complete disaster).
 */
 
 ```

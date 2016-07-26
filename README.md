@@ -32,7 +32,7 @@ int Sum(int n1, int n2) {
 	return n1 + n2
 }
 
-// Although if your code depends on functions like this, you'll be up for surprises.
+// This is not OK, and if your code depends on functions like this, you'll be up for surprises.
 int IncCount(int num) {
 	_count+=num;
 	return count;

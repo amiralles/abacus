@@ -360,6 +360,7 @@ namespace Abacus.Test {
 			assert.Equal(98, sess.ResCacheHits,   "wrong number of hits");
 		};
 
+		// TODO: Doc how to use it.
 		// TODO: Function calls with recievers.
 		// TODO: Op presedence
 	}

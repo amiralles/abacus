@@ -27,8 +27,8 @@ Since you can plug your own functions, there is no way for the compiler to enfor
 on your code, but if you are not careful, you may end up with unexpected results. Let's look at some code:
 
 ``` c
-// Suppose you have some useful functions in this class and want to expose them to abacus. That's completely possible
-// but there are some considerations.
+// Suppose you have some useful functions in this class and want to expose them to abacus. That's 
+//completely possible but there are some considerations.
 
 class YourAwesomeLibrary {
 	// This it's OK. You can use functions like this one without any hassle.
@@ -50,8 +50,8 @@ class YourAwesomeLibrary {
 	At this point _count == 4, but without dropping the cache, abacus will always return 2!.
 	That's is why you should always use side effects free functions. (Or pure functions if you will).
 	
-	(Yes, you can drop the cache on each invocation and get away with state mutations, but performance wise, 
-	it'll be a complete disaster).
+	(Yes, you can drop the cache on each invocation and get away with state mutations, 
+	but performance wise, it'll be a complete disaster).
 */
 
 ```

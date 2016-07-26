@@ -28,17 +28,27 @@ Since you can plug your own functions, there is no way for the compiler to enfor
 on your code, but if you are not careful in this respect, you may end up with unexpected results.
 
 ```
-// This it's OK.
+// This it's OK. You can use functions like this without hassle.
 int Sum(int n1, int n2) {
 	return n1 + n2
 }
 
-// This it's not.
-int RemoveLastAndCount() {
-	var last = _items.Last();
-	_items.Remove(last);
-	return _items.Count;
+// Although if your code depends on functions like this, you'll be up for surprises.
+int IncCount(int num) {
+	_count+=num;
+	return count;
 }
+
+/* Let's look at this code:
+	_count=1;
+	IncCount(1); => 2
+	IncCount(1); => 2!
+	IncCount(1); => 2!
+	At this point _count == 4, but without dropping the cache, abacus will always return 2!.
+	That's is why you should always use side effects free functions. (Or pure functions if you will).
+	
+*/
+
 ```
 
 

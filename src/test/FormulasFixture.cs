@@ -1,6 +1,7 @@
 #pragma warning disable 414, 219
 namespace Abacus.Test {
 	using System;
+	using System.Collections.Generic;
 	using System.Reflection;
 	using System.Linq.Expressions;
 	using static Abacus.Utils;
@@ -342,7 +343,6 @@ namespace Abacus.Test {
 			assert.Equal(99, sess.CacheHits,   "wrong number of cache hits");
 		};
 
-
 		_ run_time_cache = assert => {
 			var sess   = new Session(1);
 			var names  = new [] {"a", "b"}; 
@@ -363,6 +363,7 @@ namespace Abacus.Test {
 		// TODO: Doc how to use it.
 		// TODO: Function calls with recievers.
 		// TODO: Op presedence
+		// TODO: Stress tests.
 	}
 }
 

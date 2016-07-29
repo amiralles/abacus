@@ -289,6 +289,7 @@ namespace Abacus {
 			return lhd == rhd ? 0 : lhd < rhd ? -1 : 1;
 		}
 
+		[Conditional("DEBUG")]
 		static void DbgPrintCmp(object lhs, object rhs) {
 			WriteLine("========= cmp ========");
 			WriteLine($"lhs: {lhs}({lhs?.GetType()})");

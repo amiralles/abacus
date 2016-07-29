@@ -106,7 +106,8 @@ namespace Abacus {
 				TokenizeStr()      ??
 				TokenizeID();
 
-			WriteLine(token?.ToString() ?? "null");
+			DbgWriteToken(token);
+
 			if(token == null) {
 				DieUnkownToken();
 			}
@@ -115,6 +116,11 @@ namespace Abacus {
 				DieCursorDidntMove();
 
 			return token;
+		}
+
+		[Conditional("DEBUG")]
+		void DbgWriteToken(Token token) {
+			WriteLine(token?.ToString() ?? "null");
 		}
 
 		void DieCursorDidntMove() {

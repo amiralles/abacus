@@ -16,6 +16,7 @@ namespace Abacus.Test {
 
 	class ReduceFixture {
 
+		//TODO: Add hook for client func calls.
 		_ reduce_data_table = assert => {
 			var tbl = new DataTable();
 			tbl.Columns.Add("Precio",  typeof(double));

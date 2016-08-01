@@ -19,17 +19,24 @@ namespace Abacus.Test {
 		_ reduce_data_table = assert => {
 			var tbl = new DataTable();
 			tbl.Columns.Add("Precio", typeof(double));
-			for (int i =0; i < 10; ++i) {
+			tbl.Columns.Add("Fecha",  typeof(DateTime));
+
+			var startDate = new DateTime(2012, 05, 14);
+			for (int i = 0; i < 10; ++i) {
 				var row = tbl.NewRow();
 				row["Precio"] = i;
+				row["Fecha"]  = startDate.AddDays(i);
 				tbl.Rows.Add(row);
 			}
 
-			//TODO: Add more test, increase volume, apply mutiple reductions to 
-			//      the same set.
-			//      Add an overload that takes a session object handled by usr code.
-			tbl = tbl.Reduce("Precio >= 5");
-			assert.Equal(5, tbl.Rows.Count);
+			var red = tbl.Reduce("Precio >= 5");
+			assert.Equal(5, red.Rows.Count);
+
+			red = tbl.Reduce("Precio >= 5 or Precio = 2");
+			assert.Equal(6, red.Rows.Count);
+
+			red = tbl.Reduce("Fecha = dat('15/05/2012')");
+			assert.Equal(1, red.Rows.Count);
 		};
 	}
 }

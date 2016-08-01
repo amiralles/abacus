@@ -7,6 +7,7 @@ namespace Abacus {
 	using static System.Convert;
 
 	public static class AbacusTableExtensions {
+		static Random Rnd = new Random();
 
 		static bool ToBool(object val) {
 			DbgPrint(val);
@@ -21,7 +22,7 @@ namespace Abacus {
 
 
 		public static DataTable Reduce(this DataTable tbl, string formula) {
-			var sess   = new Session(1);
+			var sess  = new Session(Rnd.Next());
 			var names = new string[tbl.Columns.Count];
 			var res = tbl.Clone();
 			for (int i = 0; i < tbl.Columns.Count; ++i) 

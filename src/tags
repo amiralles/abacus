@@ -5,6 +5,7 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 AND	core/Tokenizer.cs	/^		const string AND = "and", OR = "or";$/;"	f	class:Abacus.Tokenizer	file:
+Abacus	core/AbacusExtensions.cs	/^namespace Abacus {$/;"	n
 Abacus	core/Assert.cs	/^namespace Abacus {$/;"	n
 Abacus	core/BinaryOperator.cs	/^namespace Abacus {$/;"	n
 Abacus	core/BuiltinLocals.cs	/^namespace Abacus {$/;"	n
@@ -22,7 +23,9 @@ Abacus	core/TokenKind.cs	/^﻿namespace Abacus {$/;"	n
 Abacus	core/Tokenizer.cs	/^namespace Abacus {$/;"	n
 Abacus	core/Utils.cs	/^namespace Abacus {$/;"	n
 Abacus.Test	test/FormulasFixture.cs	/^namespace Abacus.Test {$/;"	n
+Abacus.Test	test/ReduceFixture.cs	/^namespace Abacus.Test {$/;"	n
 Abacus.Test	test/TokenizerFixture.cs	/^namespace Abacus.Test {$/;"	n
+AbacusTableExtensions	core/AbacusExtensions.cs	/^	public static class AbacusTableExtensions {$/;"	c	namespace:Abacus
 Accept	core/SyntaxNode.cs	/^		public abstract Expression Accept(SyntaxWalker walker);$/;"	m	class:Abacus.SyntaxNode
 Add	core/BinaryOperator.cs	/^			Add = new BinOp(Operator.Add, 1),$/;"	f	struct:Abacus.BinaryOperator
 Add	core/Operator.cs	/^        Add,$/;"	e	enum:Abacus.Operator	file:
@@ -73,7 +76,7 @@ Concat	core/TokenKind.cs	/^        Concat,$/;"	e	enum:Abacus.TokenKind	file:
 Const	core/SyntaxNode.cs	/^		public Const(object val) :$/;"	m	class:Abacus.Const
 Const	core/SyntaxNode.cs	/^		public Const(object val, Type t) {$/;"	m	class:Abacus.Const
 Const	core/SyntaxNode.cs	/^	public class Const  : SyntaxNode {$/;"	c	namespace:Abacus
-CreateHash	core/Session.cs	/^		static int CreateHash(string src, object[]locals) => $/;"	m	struct:Abacus.Session
+CreateHash	core/Session.cs	/^		static int CreateHash(string src, object[]locals) =>$/;"	m	struct:Abacus.Session
 CreateToken	core/Tokenizer.cs	/^		Token CreateToken(TK kind, char ch) {$/;"	m	class:Abacus.Tokenizer	file:
 CreateToken	core/Tokenizer.cs	/^		Token CreateToken(TK kind, string text) {$/;"	m	class:Abacus.Tokenizer	file:
 DISP	core/SyntaxWalker.cs	/^		static readonly MethodInfo DISP = INTER_TYPE.GetMethod($/;"	f	class:Abacus.SyntaxWalker	file:
@@ -89,6 +92,7 @@ DbgEnsureLhsRhs	core/Assert.cs	/^		public static void DbgEnsureLhsRhs(SyntaxNode
 DbgEnsureMerge	core/Interpreter.cs	/^		static void DbgEnsureMerge(string[] localNames, object[]locals) {$/;"	m	class:Abacus.Interpreter	file:
 DbgPrint	core/Utils.cs	/^		public static void DbgPrint(object msg) {$/;"	m	class:Abacus.Utils
 DbgPrintCmp	core/SyntaxWalker.cs	/^		static void DbgPrintCmp(object lhs, object rhs) {$/;"	m	class:Abacus.SyntaxWalker	file:
+DbgWriteToken	core/Tokenizer.cs	/^		void DbgWriteToken(Token token) {$/;"	m	class:Abacus.Tokenizer	file:
 Dbl	core/StdLib.cs	/^		public static double Dbl(object val) {$/;"	m	class:Abacus.StdLib
 Dec	core/StdLib.cs	/^		public static Decimal Dec(object val) {$/;"	m	class:Abacus.StdLib
 Die	core/Error.cs	/^		public static void Die(string msg) {$/;"	m	class:Abacus.Error
@@ -313,7 +317,9 @@ ReadNum	core/Tokenizer.cs	/^        Token ReadNum() {$/;"	m	class:Abacus.Tokeniz
 ReadToken	core/Parser.cs	/^		Token ReadToken(TK kind = default(TK)) {$/;"	m	class:Abacus.Parser	file:
 ReadTokenOrDie	core/Tokenizer.cs	/^		Token ReadTokenOrDie(){$/;"	m	class:Abacus.Tokenizer	file:
 ReadWord	core/Tokenizer.cs	/^        string ReadWord() {$/;"	m	class:Abacus.Tokenizer	file:
+Reduce	core/AbacusExtensions.cs	/^		public static DataTable Reduce(this DataTable tbl, string formula) {$/;"	m	class:Abacus.AbacusTableExtensions
 Reduce	core/SyntaxNode.cs	/^		public virtual SyntaxNode Reduce()$/;"	m	class:Abacus.SyntaxNode
+ReduceFixture	test/ReduceFixture.cs	/^	class ReduceFixture {$/;"	c	namespace:Abacus.Test
 ReportUnkwnowBinaryOp	core/SyntaxWalker.cs	/^		void ReportUnkwnowBinaryOp(Operator op) {$/;"	m	class:Abacus.SyntaxWalker	file:
 Res	core/Session.cs	/^			public readonly object Res;$/;"	f	struct:Abacus.Session.CacheEntry
 ResCacheHits	core/Session.cs	/^		public int CacheMisses, CacheHits, ResCacheMisses, ResCacheHits, Id;$/;"	f	struct:Abacus.Session
@@ -361,6 +367,7 @@ TRUNC	core/SyntaxWalker.cs	/^		static readonly MethodInfo TRUNC = WALKER_TYPE.Ge
 Tab	core/TokenKind.cs	/^        Tab = 10,$/;"	e	enum:Abacus.TokenKind	file:
 Target	core/SyntaxNode.cs	/^		public readonly SyntaxNode   Target;$/;"	f	class:Abacus.FuncCall
 Text	core/Token.cs	/^        public readonly string Text;$/;"	f	class:Abacus.Token
+ToBool	core/AbacusExtensions.cs	/^		static bool ToBool(object val) {$/;"	m	class:Abacus.AbacusTableExtensions	file:
 ToString	core/Token.cs	/^        public override string ToString() => Format($/;"	m	class:Abacus.Token
 Token	core/Token.cs	/^        public Token(char ch, TokenKind kind, int endsAtColNo, int lineNo)$/;"	m	class:Abacus.Token
 Token	core/Token.cs	/^        public Token(string text, TokenKind kind, int endsAtColNo, int lineNo) {$/;"	m	class:Abacus.Token
@@ -470,6 +477,7 @@ expr	core/SyntaxWalker.cs	/^        public Expression Walk(OrExpression expr)$/;
 hook_api_call	test/FormulasFixture.cs	/^		_ hook_api_call  = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
 msg	core/Error.cs	/^		public static void Die(object msg) => Die(msg?.ToString() ?? "null");$/;"	f	class:Abacus.Error
 paren_unary_minus	test/TokenizerFixture.cs	/^		_ paren_unary_minus = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:
+reduce_data_table	test/ReduceFixture.cs	/^		_ reduce_data_table = assert => {$/;"	f	class:Abacus.Test.ReduceFixture	file:
 run_time_cache	test/FormulasFixture.cs	/^		_ run_time_cache = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
 sanitize_num_locals	test/FormulasFixture.cs	/^		_ sanitize_num_locals = assert => {$/;"	f	class:Abacus.Test.FormulasFixture	file:
 should_ignore_LF	test/TokenizerFixture.cs	/^		_ should_ignore_LF = assert => {$/;"	f	class:Abacus.Test.TokenizerFixture	file:

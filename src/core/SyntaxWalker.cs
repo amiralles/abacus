@@ -38,6 +38,12 @@ namespace Abacus {
 		static readonly MethodInfo CMP = WALKER_TYPE.GetMethod(
 				"__Cmp", STAPRIVATE);
 
+		static readonly MethodInfo ADDDAT = WALKER_TYPE.GetMethod(
+				"__AddDat", STAPRIVATE);
+
+		static readonly MethodInfo SUBDAT = WALKER_TYPE.GetMethod(
+				"__SubDat", STAPRIVATE);
+
 		static readonly MethodInfo TOB = WALKER_TYPE.GetMethod(
 				"__ToBln", STAPRIVATE);
 
@@ -121,9 +127,16 @@ namespace Abacus {
 			DbgPrint(ArrToStr(args));
 			var argv = NewArrayInit(typeof(object), args);
 
+
 			//Global function.
-			return Call(null, DISP, 
-					reciever, Constant(fn.FuncName), argv);
+			var call = Call(null, DISP, reciever, Constant(fn.FuncName), argv);
+
+			// Special case to support expressions like:
+			// today + 1
+			// today - 1
+			if (fn.FuncName == "dat")
+				return Convert(call, typeof(DateTime));
+			return call;
 		}
 
 
@@ -140,8 +153,21 @@ namespace Abacus {
         public Expression Walk(BinExpression expr) {
 
 			var op  = expr.Op;
-			var lhs = Dbl(expr.Lhs.Accept(this));
-			var rhs = Dbl(expr.Rhs.Accept(this));
+			var lhs = expr.Lhs.Accept(this);
+			var rhs = expr.Rhs.Accept(this);
+			rhs = Dbl(rhs);
+
+
+			/// Special cases to suppor expressions
+			/// like this: 
+			/// now + 1 => tomorow.
+			/// now - 1 => yesterday.
+			if (lhs.Type == typeof(DateTime)) {
+				if (op == Operator.Add) return Call(null, ADDDAT, lhs, rhs);
+				if (op == Operator.Sub) return Call(null, SUBDAT, lhs, rhs);
+			}
+
+			lhs = Dbl(lhs);
 
 			switch(op) {
 				case Operator.Add:      return Add(lhs, rhs);
@@ -236,6 +262,12 @@ namespace Abacus {
 
 			return ToBoolean(obj);
 		}
+
+		static DateTime __AddDat(DateTime date, double days) => 
+			date.AddDays(days).Date;
+
+		static DateTime __SubDat(DateTime date, double days) => 
+			date.AddDays(days * -1).Date;
 
 		//TODO: Add strict comparison (something like JS).
 		static int __Cmp(object lhs, object rhs) {

@@ -114,7 +114,7 @@ tbl.Reduce("Customer='pipex' or Customer='vilmis');
 // that belongs to him/her. We can inject our own variables into the
 // interpreter's run-time context and use them as if they were standard fields.
 
-// In a real system you'll probbabily grab some values from session 
+// In a real system you'll probably grab some values from session 
 // objects and sutff like that.
 
 var locNames  = new string[] { "curr_usr" };

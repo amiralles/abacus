@@ -11,8 +11,12 @@ namespace Abacus {
 
 		static bool ToBool(object val) {
 			DbgPrint(val);
+
 			if (val is bool)
 				return (bool)val;
+
+			if (val == null)
+				return false;
 
 			if (val is IConvertible)
 				return ToBoolean(val);
@@ -24,7 +28,16 @@ namespace Abacus {
 			tbl.Reduce(formula, new string[0], new object[0]);
 
 		public static DataTable Reduce(this DataTable tbl, 
-				string formula, string[] locNames, object[] locals) {
+				string formula, Func<Exception, object> onError) =>
+			tbl.Reduce(formula, new string[0], new object[0], onError);
+
+		public static DataTable Reduce(this DataTable tbl, 
+				string formula, string[] locNames, object[] locals) =>
+			tbl.Reduce(formula, locNames, locals, null);
+
+		public static DataTable Reduce(this DataTable tbl, 
+				string formula, string[] locNames, object[] locals, 
+				Func<Exception, object> onError) {
 
 			//TODO: Validate args.
 
@@ -56,9 +69,19 @@ namespace Abacus {
 					locs[rowslen + i] = locals[i];
 				//==========================================================
 
-				var r = Eval(formula, names, locs, ref sess);
-				if(ToBool(r))
-					res.ImportRow(row);
+				try {
+					var r = Eval(formula, names, locs, ref sess, onError);
+					if(ToBool(r))
+						res.ImportRow(row);
+				}
+				catch(Exception ex) {
+					if (onError != null) {
+						onError(ex);
+					}
+					else {
+						throw;
+					}
+				}
 			}
 
 			return res;

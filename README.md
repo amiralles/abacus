@@ -20,7 +20,6 @@ TODO: Show/Explain some use cases.
 ### Syntax and supported operations
 TODO: Add the list of supported operators.
 
-
 ### Function calls and side effects
 Abacus assumes that function calls are **side effects free**, which means that if
 you called a function twice, within the same session and using the same argument list, you will get the same result no matter what the function actually does. 
@@ -81,9 +80,52 @@ cd tools
 ./runtests.sh
 ```
 
-### How to use it
+### How to use it to filter data
 ```
-	//TODO:
+Let's suppose we have a table and we want to filter some records based
+on a run-time compiled expression. (Maybe entered by an end user thru a
+wizard or something).
+
+``` cpp
+// This is the sample data we'll use.
+// ------------------------------------------------
+// |                    Sales                     |
+// ------------------------------------------------
+// | Amount |    Date     | Customer  | SalesRep  |
+// ------------------------------------------------
+// |    123 | 14/05/2012  | amiralles |   foo     |
+// |    222 | 14/05/2012  | amiralles |   bar     |
+// |    456 | 21/02/2012  | pipex     |   foo     |
+// |    789 | 21/02/2012  | pipex     |   baz     |
+// |    123 | 21/02/2012  | vilmis    |   baz     |
+// ------------------------------------------------
+
+// This will give us all amiralles's purchases.
+tbl.Reduce("Customer='amiralles'");
+
+// This will give us all amiralles's purchases from 200 bucks and up.
+tbl.Reduce("Customer='amiralles' and Amount >= 200");
+
+// This will give us all pipex's and vilmis's purchases combined.
+tbl.Reduce("Customer='pipex' or Customer='vilmis');
+
+// So far so good, now let's use some variables. From here, abacus is somewhat
+// special compared to sql expressions becasue it gives you more flexibility.
+// Let's suppose we want to show to the current user (a sales rep) all sales
+// that belongs to him/her. We can inject our own variables into the
+// interpreter's run-time context and use them as if they were standard fields.
+
+// In a real system you'll probbabily grab some values from session 
+// objects and sutff like that.
+
+var locNames  = new string[] { "curr_usr" };
+var locValues = new object[] { "foo" };
+
+tbl.Reduce("SalesRep = curr_usr", locNames, locValues);
+
+// And now, the really cool part. Hooking you own API.
+// TODO: Show an example that makes sence...
+
 ```
 
 ### How to plug your own functions

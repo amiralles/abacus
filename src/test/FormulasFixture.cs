@@ -360,6 +360,16 @@ namespace Abacus.Test {
 			assert.Equal(98, sess.ResCacheHits,   "wrong number of hits");
 		};
 
+		_ handle_errors = assert => {
+			var handled = false;
+			Func<Exception, object> handleErr = ex => handled = true;
+
+			Eval("a+b", onError: handleErr);
+
+			assert.IsTrue(handled, "Failed to handle exception.");
+		
+		};
+
 		// TODO: Doc how to use it.
 		// TODO: Function calls with recievers.
 		// TODO: Op presedence

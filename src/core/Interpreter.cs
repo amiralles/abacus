@@ -36,14 +36,27 @@ namespace Abacus {
 			var localNames = new string[0];
 			var locals     = new string[0];
 			var session    = new Session();
-			return Eval(src, localNames, locals, ref session);
+			return Eval(src, localNames, locals, ref session, null);
 		}
 
-		// TODO: Add OnSyntaxtErr handler.
-		// TODO: Add OnError handler.
+		public static object Eval(string src, Func<Exception, object> onError) {
+			var localNames = new string[0];
+			var locals     = new string[0];
+			var session    = new Session();
+			return Eval(src, localNames, locals, ref session, onError);
+		}
+
 		public static object Eval(
 				string src, string[] localNames, object[] locals, 
 				ref Session session) {
+
+			return Eval(src, localNames, locals, ref session, null);
+		}
+
+		// TODO: Add OnSyntaxtErr handler.
+		public static object Eval(
+				string src, string[] localNames, object[] locals, 
+				ref Session session, Func<Exception, object> onError) {
 
 			locals = SanitizeNumLocals(locals);
 			EnsureEvalArgs(src, localNames, locals);
@@ -75,16 +88,16 @@ namespace Abacus {
 				}
 
 			}
-			catch(DivideByZeroException) {
-				res = ERRDIV0;
+			catch(DivideByZeroException ex) {
+				res = onError != null ? onError(ex) : ERRDIV0;
 			}
 #if DEBUG
 			catch(Exception ex) {
-				WriteLine(ex.Message);
-				throw;
+				if (onError != null) { res = onError(ex); }
+				else { WriteLine(ex.Message); throw; }
 #else
-			catch(Exception) {
-				res = ERR;
+			catch(Exception ex) {
+				res = onError != null ? onError(ex) : ERR;
 #endif
 			}
 

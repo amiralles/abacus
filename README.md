@@ -80,6 +80,16 @@ cd tools
 ./runtests.sh
 ```
 
+### How to use it to add eval capabilities
+```
+//TODO:
+```
+
+### How to use it to apply conditional formatting
+```
+//TODO:
+```
+
 ### How to use it to filter data
 Let's suppose we have a table and we want to filter some records based
 on a run-time compiled expression. (Maybe entered by an end user thru a

@@ -81,8 +81,18 @@ cd tools
 ```
 
 ### How to use it to add eval capabilities
+Of course you can use it to perform evals on strings and stuff like that. i.e:
+```
+"2+3".Eval(); //=> 5
+```
+But often times that will be a performance killer.
 ```
 //TODO:
+// show how to use variables.
+// show how to call functions.
+// show how to use the "onError" callback.
+// performance considerations, session, cache, et. al.
+
 ```
 
 ### How to use it to apply conditional formatting

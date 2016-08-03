@@ -371,9 +371,6 @@ namespace Abacus.Test {
 		
 		};
 
-		//TODO: Get prop values from non std injected types. i.e. Instances
-		//      of our own classes.
-		//      Idem form setters and method calls.
 		_ get_prop_values_from_std_types = assert => {
 			var res = Eval("'fruli'.get_length()");
 			assert.Equal(5, res);
@@ -392,6 +389,17 @@ namespace Abacus.Test {
 			assert.Equal(124d, res);
 		};
 
+		_ get_prop_values_from_user_def_types = assert => {
+			var names  = new string [] { "foo" };
+			var values = new object [] { new Foo() };
+
+			var res = Eval(@"foo.set_msg('hello world')
+							 foo.get_msg()",
+							 names, values);
+
+			assert.Equal("hello world", res);
+		};
+
 		// TODO: Doc how to use it.
 		// TODO: Op presedence
 		// TODO: Stress tests.
@@ -399,6 +407,7 @@ namespace Abacus.Test {
 
 	class Foo {
 		public double PlusOne(double val) => val + 1;
+		public string Msg { get; set; }
 	}
 }
 

@@ -24,6 +24,20 @@ namespace Abacus {
 			return false;
 		}
 
+
+		/// This allows client code to do things like:
+		/// "2+3".Eval(); //=> 5
+		/// Keep in mind for most use  cases this **is** a perf killer.
+		/// It doesn't use session at all, hence it can't rely on cached
+		/// results and has to compile and recompile everything from scratch, 
+		public static object Eval(this string src) {
+			var names  = new string[0]; 
+			var values = new object[0];
+			var sess   = new Session(Rnd.Next());
+			return Interpreter.Eval(src, names, values, ref sess, null);
+		}
+
+
 		public static DataTable Reduce(this DataTable tbl, string formula) =>
 			tbl.Reduce(formula, new string[0], new object[0]);
 
@@ -70,7 +84,7 @@ namespace Abacus {
 				//==========================================================
 
 				try {
-					var r = Eval(formula, names, locs, ref sess, onError);
+					var r = Interpreter.Eval(formula, names, locs, ref sess, onError);
 					if(ToBool(r))
 						res.ImportRow(row);
 				}

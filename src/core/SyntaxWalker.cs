@@ -26,6 +26,9 @@ namespace Abacus {
 		static readonly BF STAPRIVATE = 
 			BF.Static | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
 
+		static readonly BF INSTAPUB =
+			BF.Instance | BF.Public | BF.InvokeMethod | BF.IgnoreCase;
+
 		// static readonly BF PRIVATE = 
 		// 	BF.Instance | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
 
@@ -112,21 +115,37 @@ namespace Abacus {
 				reciever = fn.Target.Accept(this);
 
 			Expression[] args = new Expression[0];
+			Type[] argsTypes   = new Type[0];
 
 			if (fn.Argv != null && fn.Argv.Length > 0) {
 				args = new Expression[fn.Argv.Length];
+				argsTypes = new Type[args.Length];
 				Expression a;
 				for(int i = 0; i < fn.Argv.Length; ++i) {
 					a = fn.Argv[i].Accept(this);
-					if (a.Type != typeof(object))
-						a = Convert(a, typeof(object));
+					argsTypes[i] = a.Type;
 					args[i] = a;
 				}
 			}
 
 			DbgPrint(ArrToStr(args));
-			var argv = NewArrayInit(typeof(object), args);
 
+			// Can we get the method's meta from target?
+			// If so, use a std instance method call.
+			if (reciever != null) {
+				MethodInfo mi;
+			   	if (TryGetMethod(reciever.Type, fn.FuncName, argsTypes, out mi))
+					return Call(reciever, mi, args);
+			}
+
+			// If we can't get method's meta, we just use the generic
+			// dispatch mecanism.
+			for (int i= 0; i < args.Length; ++i) {
+				if (args[i].Type != typeof(object))
+					args[i] = Convert(args[i], typeof(object));
+			}
+
+			var argv = NewArrayInit(typeof(object), args);
 
 			//Global function.
 			var call = Call(null, DISP, reciever, Constant(fn.FuncName), argv);
@@ -139,6 +158,13 @@ namespace Abacus {
 			return call;
 		}
 
+		static bool TryGetMethod(
+				Type recieverType, string fnName, Type[] argstypes, 
+				out MethodInfo mi) {
+
+			mi = recieverType.GetMethod(fnName, INSTAPUB, null, argstypes, null);
+			return mi != null;
+		}
 
         public Expression Walk(UnaryExpression expr) {
 			var val = expr.Expr.Accept(this);

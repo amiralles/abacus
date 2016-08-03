@@ -328,7 +328,9 @@ namespace Abacus {
 
 		Token TokenizeRangeOp()  { return null; }
 
-		Token TokenizeDot()      { return null; }
+		Token TokenizeDot() => PeekChar() == DOT
+                ? CreateToken(TK.Dot, ReadChar()) 
+                : null;
 
 		Token TokenizeComma()    { 
             return PeekChar() == COMMA
@@ -355,10 +357,16 @@ namespace Abacus {
         }
 
         Token ReadNum() {
-            int size = 0;
+            int size = 0, dcount = 0;
             char ch;
-            while((char.IsNumber((ch = PeekChar(at: size + 1))) || ch == DOT))
+            while((char.IsNumber((ch = PeekChar(at: size + 1))) || ch == DOT)) {
+				if (ch == DOT)
+					dcount++;
+
+				if (dcount>1)
+					break;
                 ++size;
+			}
 
 			var buff = ReadChars(size);
             return CreateToken(TK.NumericLiteral, new string(buff));

@@ -370,8 +370,17 @@ namespace Abacus.Test {
 		
 		};
 
+
+		_ call_func_on_net_std_types = assert => {
+			// Property
+			// var res = Eval("'fruli'.lenght");
+			// assert.Equal(5, res);
+
+			var res = Eval("123.456.toString()");
+			assert.Equal("123.456", res);
+		};
+        //
 		// TODO: Doc how to use it.
-		// TODO: Function calls with recievers.
 		// TODO: Op presedence
 		// TODO: Stress tests.
 	}

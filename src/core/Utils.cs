@@ -54,6 +54,7 @@ namespace Abacus {
 
 			return 0;
 		}
+
 		public static object [] SanitizeNumLocals(object [] locals) {
 			Ensure("locals", locals);
 			var res  = new object[locals.Length];

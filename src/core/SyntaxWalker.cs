@@ -133,16 +133,17 @@ namespace Abacus {
 
 			DbgPrint(ArrToStr(args));
 
-			// Can we get the method's meta from target?
-			// If so, use a std instance method call.
+			// Can we get the method's meta from target at compile time?
+			// If so, use a std linq instance method call.
 			if (reciever != null) {
 				MethodInfo mi;
 			   	if (TryGetMethod(reciever.Type, fn.FuncName, argsTypes, out mi))
 					return Call(reciever, mi, args);
 			}
 
-			// If we can't get method's meta, we just use the generic
-			// dispatch mecanism.
+			// If we can't get method's meta at compile time, we just use 
+			// the generic dispatch mecanism. (Which is slower, but has access
+			// to actual runtime types).
 			for (int i= 0; i < args.Length; ++i) {
 				if (args[i].Type != typeof(object))
 					args[i] = Convert(args[i], typeof(object));
@@ -161,14 +162,17 @@ namespace Abacus {
 			return call;
 		}
 
-		static bool TryGetMethod(
+		public static bool TryGetMethod(
 				Type recieverType, string fnName, Type[] argstypes, 
 				out MethodInfo mi) {
+
+			DbgPrint($"Looking for {fnName} ({ArrToStr(argstypes)})" + 
+					 $" on {recieverType}");
 
 			mi = recieverType.GetMethod(fnName, INSTAPUB, null, argstypes, null);
 
 			if (mi == null) {
-				// maybe is a property accessor.
+				// maybe is a property getter, setter.
 				if (fnName.StartsWith("get_") && argstypes.Length == 0) {
 					mi = recieverType.GetMethod(
 							fnName, INSTAPRIVATE, null, argstypes, null);

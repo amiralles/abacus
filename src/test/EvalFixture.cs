@@ -15,6 +15,7 @@ namespace Abacus.Test {
 	using _ = System.Action<Contest.Core.Runner>;
 
 	class EvalFixture {
+
 		_ basic_math = assert => {
 			// add
 			assert.Equal( 5d,   Eval(" 2.5 +  2.5"));
@@ -383,9 +384,29 @@ namespace Abacus.Test {
 			assert.Equal("123.456", res);
 		};
 
+		_ call_func_on_user_def_types = assert => {
+			var names  = new string [] { "foo" };
+			var values = new object [] { new Foo() };
+
+			var res = Eval("foo.plusOne(123)", names, values);
+			assert.Equal(124d, res);
+		};
+
+		_ try_get_method = assert => {
+			MethodInfo mi;
+			SyntaxWalker.TryGetMethod(
+				typeof(Foo), "plusone", new Type[] { typeof(double) }, out mi);
+
+			assert.IsNotNull(mi);
+		};
+
 		// TODO: Doc how to use it.
 		// TODO: Op presedence
 		// TODO: Stress tests.
+	}
+
+	class Foo {
+		public double PlusOne(double val) => val + 1;
 	}
 }
 

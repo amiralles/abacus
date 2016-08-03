@@ -46,6 +46,11 @@ namespace Abacus {
 			return Eval(src, localNames, locals, ref session, onError);
 		}
 
+		public static object Eval(string src, string[] names, object[] values) {
+			var session = new Session();
+			return Eval(src, names, values, ref session, null);
+		}
+
 		public static object Eval(
 				string src, string[] localNames, object[] locals, 
 				ref Session session) {
@@ -132,28 +137,37 @@ namespace Abacus {
 		/// calls to non std functions. (i.e. Integrate their own api).
 		/// See: OnDispatchCall.
 		static object __Dispatch(
-				object target, string lowerName, object[] argv) {
+				object reciever, string lowerName, object[] argv) {
 
-			if (target != null)
-				Die("Non Static Calls are not implemented yet...");
+			MethodInfo mi;
+			var argsTypes = StdLib.GetTypes(argv);
 
-			var mi = __GetMethod(target, lowerName, StdLib.GetTypes(argv));
-
-			if (mi == null) {
-				var call = OnDispatchCall(target, lowerName, argv);
-				if (!call.Handled)
-					Die($"No method error ({lowerName}).");
-				return call.Result;
+			if (reciever != null) {
+				SyntaxWalker.TryGetMethod(
+						reciever.GetType(), lowerName, argsTypes, out mi);
+			}
+			else {
+				mi = __GetStdMethod(lowerName, argsTypes);
 			}
 
+			if (mi == null)
+				return DelegateDispatch(reciever, lowerName, argv);
+
 			//TODO: cache method info.
-			return mi.Invoke(null, argv);
+			return mi.Invoke(reciever, argv);
 		}
 
-		static MethodInfo __GetMethod(object target, string name, Type[]argv) {
-			if (target != null)
-				Die("Non std call are not implemented yet...");
+		/// Use this helper when the interpreter can't resolve a method call.
+		static object DelegateDispatch(
+				object target, string lowerName, object[] argv) {
 
+			var call = OnDispatchCall(target, lowerName, argv);
+			if (!call.Handled)
+				Die($"No method error ({lowerName}).");
+			return call.Result;
+		}
+
+		static MethodInfo __GetStdMethod(string name, Type[]argv) {
 			return STDLIB.GetMethod(name, STAPUBCI, null, argv, null);
 		}
 

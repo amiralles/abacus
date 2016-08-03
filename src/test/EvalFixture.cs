@@ -14,7 +14,7 @@ namespace Abacus.Test {
 	using static System.DateTime;
 	using _ = System.Action<Contest.Core.Runner>;
 
-	class FormulasFixture {
+	class EvalFixture {
 		_ basic_math = assert => {
 			// add
 			assert.Equal( 5d,   Eval(" 2.5 +  2.5"));

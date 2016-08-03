@@ -29,6 +29,9 @@ namespace Abacus {
 		static readonly BF INSTAPUB =
 			BF.Instance | BF.Public | BF.InvokeMethod | BF.IgnoreCase;
 
+		static readonly BF INSTAPRIVATE =
+			BF.Instance | BF.NonPublic | BF.InvokeMethod | BF.IgnoreCase;
+
 		// static readonly BF PRIVATE = 
 		// 	BF.Instance | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
 
@@ -163,6 +166,18 @@ namespace Abacus {
 				out MethodInfo mi) {
 
 			mi = recieverType.GetMethod(fnName, INSTAPUB, null, argstypes, null);
+
+			if (mi == null) {
+				// maybe is a property accessor.
+				if (fnName.StartsWith("get_") && argstypes.Length == 0) {
+					mi = recieverType.GetMethod(
+							fnName, INSTAPRIVATE, null, argstypes, null);
+				}
+				else if (fnName.StartsWith("set_") && argstypes.Length == 1) {
+					mi = recieverType.GetMethod(
+							fnName, INSTAPRIVATE, null, argstypes, null);
+				}
+			}
 			return mi != null;
 		}
 

@@ -370,16 +370,19 @@ namespace Abacus.Test {
 		
 		};
 
+		//TODO: Get prop values from non std injected types. i.e. Instances
+		//      of our own classes.
+		//      Idem form setters and method calls.
+		_ get_prop_values_from_std_types = assert => {
+			var res = Eval("'fruli'.get_length()");
+			assert.Equal(5, res);
+		};
 
 		_ call_func_on_net_std_types = assert => {
-			// Property
-			// var res = Eval("'fruli'.lenght");
-			// assert.Equal(5, res);
-
 			var res = Eval("123.456.toString()");
 			assert.Equal("123.456", res);
 		};
-        //
+
 		// TODO: Doc how to use it.
 		// TODO: Op presedence
 		// TODO: Stress tests.

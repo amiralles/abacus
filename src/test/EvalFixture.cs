@@ -392,14 +392,6 @@ namespace Abacus.Test {
 			assert.Equal(124d, res);
 		};
 
-		_ try_get_method = assert => {
-			MethodInfo mi;
-			SyntaxWalker.TryGetMethod(
-				typeof(Foo), "plusone", new Type[] { typeof(double) }, out mi);
-
-			assert.IsNotNull(mi);
-		};
-
 		// TODO: Doc how to use it.
 		// TODO: Op presedence
 		// TODO: Stress tests.

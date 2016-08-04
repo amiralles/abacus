@@ -185,6 +185,16 @@ namespace Abacus {
 			return mi != null;
 		}
 
+		public Expression Walk(ArrayExpression arr) {
+			var items = new Expression[arr.Items.Length];
+			for(int i=0; i < arr.Items.Length; ++i) {
+				items[i] = arr.Items[i].Accept(this);
+				if (items[i].Type != typeof(object))
+					items[i] = Convert(items[i], typeof(object));
+			}
+			return Expression.NewArrayInit(typeof(object), items);
+		}
+
         public Expression Walk(UnaryExpression expr) {
 			var val = expr.Expr.Accept(this);
 			if (expr.Op == Operator.Neg)

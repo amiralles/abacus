@@ -107,6 +107,9 @@ namespace Abacus {
 			if (la.Kind == TK.StringLiteral)
 				return ParseStrLit();
 
+			if (la.Kind == TK.LeftBracket)
+				return ParseArray();
+
 			if (la.Kind == TK.Identifier) {
 				var name = ReadToken(TK.Identifier).Text;
 				if (_localNames.Contains(name))
@@ -126,6 +129,20 @@ namespace Abacus {
 #endif
 			Die(msg);
 			return null;
+		}
+
+		SyntaxNode ParseArray() {
+			//TODO: user array instead of list.
+			var items = new List<SyntaxNode>();
+			ReadToken(TK.LeftBracket);
+			while(PeekToken().Kind != TK.RightBracket) {
+				items.Add(ParsePrimary());
+				if (!TryReadToken(TK.Comma))
+					break;
+			}
+			ReadToken(TK.RightBracket);
+
+			return new ArrayExpression(items.ToArray());
 		}
 
 		SyntaxNode ParseNumLit() {

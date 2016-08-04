@@ -45,6 +45,17 @@ namespace Abacus {
 			=> NotImplemented();
 	}
 
+	public class ArrayExpression  : SyntaxNode {
+		public readonly SyntaxNode[] Items;
+		public ArrayExpression(SyntaxNode[] items) {
+			DbgEnsure("items", items);
+			Items = items;
+		}
+
+		public override Expression Accept(SyntaxWalker walker)
+			=> walker.Walk(this);
+	}
+
 	public class Const  : SyntaxNode {
 		public readonly object Val;
 		public readonly Type Type;

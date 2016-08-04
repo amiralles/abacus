@@ -39,6 +39,9 @@ namespace Abacus {
 		static readonly MethodInfo IN = WALKER_TYPE.GetMethod(
 				"__In", STAPRIVATE);
 
+		static readonly MethodInfo LET = WALKER_TYPE.GetMethod(
+				"__Let", STAPRIVATE);
+
 		static readonly MethodInfo POW = WALKER_TYPE.GetMethod(
 				"__Pow", STAPRIVATE);
 
@@ -189,26 +192,24 @@ namespace Abacus {
 			return mi != null;
 		}
 
+		public Expression Walk(LetExpression expr) {
+			var name = Constant(expr.Name);
+			var val  = expr.Val.Accept(this);
+			return Call(null, LET, name, Obj(val));
+		}
+
+
 		public Expression Walk(InExpression expr) {
 			var item = expr.Item.Accept(this);
 			var opts = expr.Opts.Accept(this);
-
-			if (item.Type != typeof(object))
-				item = Convert(item, typeof(object));
-
-			if (opts.Type != typeof(object))
-				opts = Convert(opts, typeof(object));
-
-			return Call(null, IN, item, opts);
+			return Call(null, IN, Obj(item), Obj(opts));
 		}
 
 
 		public Expression Walk(ArrayExpression arr) {
 			var items = new Expression[arr.Items.Length];
 			for(int i=0; i < arr.Items.Length; ++i) {
-				items[i] = arr.Items[i].Accept(this);
-				if (items[i].Type != typeof(object))
-					items[i] = Convert(items[i], typeof(object));
+				items[i] = Obj(arr.Items[i].Accept(this));
 			}
 			return Expression.NewArrayInit(typeof(object), items);
 		}
@@ -307,6 +308,12 @@ namespace Abacus {
 			return false;
 		}
 
+
+		static object __Let(string name, object val) {
+			//TODO: add local to session.
+			//      update parser locals from session.
+			return null;
+		}
 
 		static object __GetLocal(
 				string name, string[] localNames,  object[] locals) {

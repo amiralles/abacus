@@ -125,7 +125,7 @@ namespace Abacus {
 
 			var msg = $"Can't parse primary => {la}.";
 #if DEBUG
-			msg += "\n{DumpTokens()}"; 
+			msg += $"\n{DumpTokens()}"; 
 #endif
 			Die(msg);
 			return null;
@@ -240,7 +240,20 @@ namespace Abacus {
 		}
 
 		SyntaxNode ParseExpression() {
-			return ParseOr();
+			return ParseLet() ?? ParseOr();
+		}
+
+		SyntaxNode ParseLet() {
+			if (TryReadToken(TK.Let)) {
+				//let(foo, 'bar')
+				ReadToken(TK.LeftParen);
+				var name = ReadToken(TK.Identifier).Text;
+				ReadToken(TK.Comma);
+				var val  = ParseExpression();
+				ReadToken(TK.RightParen);
+				return new LetExpression(name, val);
+			}
+			return null;
 		}
 
 		SyntaxNode ParseOr() {

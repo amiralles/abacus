@@ -19,6 +19,7 @@ namespace Abacus {
 		const string MOD1 = "mod", MOD2 = "mod2", FDIV = "div";
 		const string AND = "and", OR = "or";
 		const string NOT = "not", IN = "in";
+		const string LET = "let";
 
 		const char EQ = '=', LT = '<', GT = '>';
 
@@ -105,6 +106,7 @@ namespace Abacus {
 				TokenizeColon()    ??
 				TokenizeNum()      ??
 				TokenizeStr()      ??
+				TokenizeKwd()      ??
 				TokenizeID();
 
 			DbgWriteToken(token);
@@ -426,6 +428,16 @@ namespace Abacus {
 			DieIf(PeekChar() != DQ, DoubleQuoteExpected());
 			ReadChar();
 			return CreateToken(TK.StringLiteral, $"\"{new string(buff)}\"");
+		}
+
+
+		Token TokenizeKwd() {
+			var nextWord = PeekWord();
+			//as of now, *let* is the only keyword.
+			if (nextWord == LET)
+				return CreateToken(TK.Let, ReadWord());
+
+			return null;
 		}
 
 		Token TokenizeID() {

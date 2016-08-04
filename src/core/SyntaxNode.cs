@@ -45,6 +45,22 @@ namespace Abacus {
 			=> NotImplemented();
 	}
 
+	public class LetExpression : SyntaxNode {
+		public readonly string Name;
+		public readonly SyntaxNode Val;
+
+		public LetExpression(string name, SyntaxNode val) {
+			DbgEnsure("name", name);
+			DbgEnsure("val", val);
+			Name = name;
+			Val = val;
+		}
+
+		public override Expression Accept(SyntaxWalker walker)
+			=> walker.Walk(this);
+	}
+
+
 	public class InExpression : SyntaxNode {
 		public readonly SyntaxNode Item, Opts;
 

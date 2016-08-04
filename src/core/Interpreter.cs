@@ -113,6 +113,7 @@ namespace Abacus {
 		static Func<string[], object[], object> Compile(
 				ref Session session, string src, string[] localNames) {
 
+
 			var tokenizer = new Tokenizer(src);
 			var parser    = new Parser(tokenizer, localNames);
 			var tree      = parser.Parse();

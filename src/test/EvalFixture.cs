@@ -108,6 +108,18 @@ namespace Abacus.Test {
 			assert.Equal(1d,    Eval("indexOf('bar', ['foo', 'bar', 'baz'])"));
 		};
 
+		// TODO: put this test back.
+		// _ bind_variables = assert => {
+        //
+		// 	var names  = new string[0];
+		// 	var locals = new object[0];
+		// 	var sess   = new Session();
+        //
+		// 	// Locals are kept in session.
+		// 	assert.Equal(123, Eval("let(foo, 123)", names, locals, ref sess));
+		// 	assert.Equal(123, Eval("foo", names, locals, ref sess));
+		// };
+        //
 		_ basic_logic = assert => {
 			// And
 			assert.IsTrue(Eval("1 and 1"));

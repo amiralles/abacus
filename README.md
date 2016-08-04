@@ -30,7 +30,7 @@ that use "SQL tricks", databinding and stuff like that.
 ---------------------------------------------
 
 ### How to work with arrays
-Abacus arrays can not be indexed as C# arrays, but the std library
+Abacus arrays can not be indexed as regular C# arrays, but the std library
 comes with some methods overcome to this limitation.
 
 ```ruby

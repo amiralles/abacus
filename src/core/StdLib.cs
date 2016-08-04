@@ -1,6 +1,7 @@
 
 namespace Abacus {
 	using System;
+	using System.Collections;
 	using static System.Convert;
 	using static Abacus.Error;
 	using static Abacus.Assert;
@@ -101,6 +102,40 @@ namespace Abacus {
 		public static object Obj(object val) {
 			object res = val;
 			return res;
+		}
+
+		/// Returns the item at the specified index or null if the
+		/// item doesn't exists.
+		public static object ItemAt(double idx, object arr) {
+			int at = ToInt32(idx);
+			int i  = 0;
+			var @enum = arr as IEnumerable;
+			DieIf(@enum == null, "arr must be enumerable");
+
+			var e = @enum.GetEnumerator();
+			while(e.MoveNext()) {
+				if (i == at) return e.Current;
+				++i;
+			}
+			return null;
+		}
+
+		public static double IndexOf(object item, object arr) {
+			int i  = 0;
+			var @enum = arr as IEnumerable;
+			DieIf(@enum == null, "arr must be enumerable");
+
+			var e = @enum.GetEnumerator();
+			while(e.MoveNext()) {
+				if (item == null && e.Current == null)
+					return i;
+
+				if (item != null && item.Equals(e.Current))
+					return i;
+
+				++i;
+			}
+			return -1;
 		}
 
 		public static DateTime Dat(object val) =>

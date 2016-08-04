@@ -100,6 +100,12 @@ namespace Abacus.Test {
 
 		_ in_operator = assert => {
 			assert.IsTrue(Eval("1 in [1, 2, 3, 4]"));
+			assert.IsFalse(Eval("5 in [1, 2, 3, 4]"));
+		};
+
+		_ index_array = assert => {
+			assert.Equal("bar", Eval("itemAt(1, ['foo', 'bar', 'baz'])"));
+			assert.Equal(1d,    Eval("indexOf('bar', ['foo', 'bar', 'baz'])"));
 		};
 
 		_ basic_logic = assert => {

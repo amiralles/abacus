@@ -41,6 +41,15 @@ itemAt(1, ['foo', 'bar', 'baz'])      # => 'bar'
 indexOf('bar', ['foo', 'bar', 'baz']) # => 1
 ```
 
+### Does it have a REPL?
+Yes, it does. You can test abacus right from your prompt. Just execute:
+```
+mono bin/abacus.exe
+```
+Now you can enter some expressions and fiddle around with the syntax and 
+explore abacus basic features.
+
+
 ### Function calls and side effects
 Abacus assumes that function calls are **side effects free**, which means
 that if you called a function twice, within the same session and using the 

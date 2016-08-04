@@ -19,7 +19,7 @@ that use "SQL tricks", databinding and stuff like that.
 ---------------------------------------------
 | Category        | Operators               |
 |-----------------|-------------------------|
-| Primary         | foo.bar foo(bar) foo[x] |
+| Primary         | foo.bar foo(bar)        |
 | Unary           | - + not                 |
 | Multiplicative  | * / %                   |
 | Additive        | + -                     |
@@ -28,6 +28,15 @@ that use "SQL tricks", databinding and stuff like that.
 | Conditional     | and or                  | 
 | Membership      | in                      |
 ---------------------------------------------
+
+### How to work with arrays
+Abacus arrays can not be indexed as C# arrays, but the std library
+comes with some methods overcome to this limitation.
+
+```ruby
+itemAt(1, ['foo', 'bar', 'baz'])      # => 'bar'
+indexOf('bar', ['foo', 'bar', 'baz']) # => 1
+```
 
 ### Function calls and side effects
 Abacus assumes that function calls are **side effects free**, which means that if

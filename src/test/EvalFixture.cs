@@ -345,10 +345,10 @@ namespace Abacus.Test {
 		};
 
 		_ run_time_cache = assert => {
-			var sess   = new Session(1);
-			var names  = new [] {"a", "b"}; 
-			var locals1 = new object[] {1, 2};
-			var locals2 = new object[] {3, 4};
+			var sess    = new Session(1);
+			var names   = new [] { "a", "b" }; 
+			var locals1 = new object[] { 1, 2 };
+			var locals2 = new object[] { 3, 4 };
 
 			for (int i=0; i < 100; ++i) {
 				if (i % 2 == 0)

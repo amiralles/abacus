@@ -1,7 +1,7 @@
 # Abacus
 Abacus is the easiest way to add scripting features to your .NET apps. Its 
 lightweight interpreter allows you to define code snippets that look like 
-__formulas__ and can be applied over reasonably large datasets
+Excel __formulas__ and can be applied over reasonably large datasets
  without sacrificing performance. 
 
 ### What can I do with it?
@@ -13,12 +13,21 @@ You can look it as a small programming language that can be embeded into your ap
 
 ### Can I integrate my app API into the scripting language?
 Of course you can. In fact, that's an aspect where Abacus outperforms solutions
-that use "SQL tricks" and stuff like that.
+that use "SQL tricks", databinding and stuff like that.
 
-TODO: Show/Explain some use cases.
-
-### Syntax and supported operations
-TODO: Add the list of supported operators.
+### Syntax and supported operators
+---------------------------------------------
+| Category        | Operators               |
+|-----------------|-------------------------|
+| Primary         | foo.bar foo(bar) foo[x] |
+| Unary           | - + not                 |
+| Multiplicative  | * / %                   |
+| Additive        | + -                     |
+| Relational      | > < <= >=               |
+| Equality        | = <>                    |
+| Conditional     | and or                  | 
+| Membership      | in                      |
+---------------------------------------------
 
 ### Function calls and side effects
 Abacus assumes that function calls are **side effects free**, which means that if
@@ -38,24 +47,23 @@ class YourAwesomeLibrary {
 	
 	// This is NOT OK, and if your code depends on functions like this, you'll be up for surprises.
 	public int IncCount(int num) {
-		_count+=num;
-		return count;
+		_count += num;
+		return _count;
 	}
 }
 /* Let's see what happens when abacus executes the code:
-	_count=1;
+	_count = 1;
 	IncCount(1); => 2
 	IncCount(1); => 2!
 	IncCount(1); => 2!
 	At this point _count == 4, but without dropping the cache, abacus will always return 2!.
-	That's is why you should always use side effects free functions. (Or pure functions if you will).
+	That's is why you should always use pure functions.
 	
 	(Yes, you can drop the cache on each invocation and get away with state mutations, 
 	but performance wise, it'll be a complete disaster).
 */
 
 ```
-
 
 ### How to build
 On linux and the mac, you can build it using the mono compiler by running any of these commands.

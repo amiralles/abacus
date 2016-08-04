@@ -206,11 +206,19 @@ namespace Abacus {
 			return BinaryOperator.Concat;
 		}
 
+		SyntaxNode ParseIn(SyntaxNode node) {
+			ReadToken(TK.In);
+			var opts = ParseExpression();
+			return new InExpression(node, opts);
+		}
+
 		SyntaxNode ParseExpression(int precedence) {
 			SyntaxNode node = ParseFactor();
 
 			while (true) {
 				var t = PeekToken();
+				if (t.Kind == TK.In)
+					return ParseIn(node);
 
 				BinaryOperator op;
 				if (t.IsArithmeticOp)

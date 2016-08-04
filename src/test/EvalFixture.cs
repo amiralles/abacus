@@ -94,11 +94,13 @@ namespace Abacus.Test {
 		};
 
 		_ basic_arrays = assert => {
-			// And
 			var arr = (object[]) Eval("[1, 2, 3, 4]");
 			assert.Equal(4, arr.Length);
 		};
 
+		_ in_operator = assert => {
+			assert.IsTrue(Eval("1 in [1, 2, 3, 4]"));
+		};
 
 		_ basic_logic = assert => {
 			// And

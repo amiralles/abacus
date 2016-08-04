@@ -18,7 +18,7 @@ namespace Abacus {
 	public class Tokenizer {
 		const string MOD1 = "mod", MOD2 = "mod2", FDIV = "div";
 		const string AND = "and", OR = "or";
-		const string NOT = "not";
+		const string NOT = "not", IN = "in";
 
 		const char EQ = '=', LT = '<', GT = '>';
 
@@ -99,6 +99,7 @@ namespace Abacus {
 				TokenizeConcatOp() ??
 				TokenizeRangeOp()  ??
 				TokenizeDot()      ??
+				TokenizeIn()       ??
 				TokenizeComma()    ??
 				TokenizeSemi()     ??
 				TokenizeColon()    ??
@@ -206,7 +207,9 @@ namespace Abacus {
 
 		static bool IsOperator(Token t) {
 			int kind = (int) t.Kind;
-			return (kind >= 11 && kind <= 32) || t.Kind == TK.Dot;
+			return (kind >= 11 && kind <= 32) || 
+				t.Kind == TK.In || 
+				t.Kind == TK.Dot;
 		}
 
 		// Returns true is t is Operator, Terminator or Delimiter.
@@ -327,6 +330,10 @@ namespace Abacus {
 		}
 
 		Token TokenizeRangeOp()  { return null; }
+
+		Token TokenizeIn() => PeekWord() == IN
+                ? CreateToken(TK.In, ReadWord()) 
+                : null;
 
 		Token TokenizeDot() => PeekChar() == DOT
                 ? CreateToken(TK.Dot, ReadChar()) 

@@ -26,6 +26,7 @@
         LessThan=103,
         GreaterThanOrEqual=104,
         LessThanOrEqual=105,
+		In = 200,
         //=========================================================
 
 		Ignore,

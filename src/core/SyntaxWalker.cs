@@ -1,6 +1,7 @@
 
 namespace Abacus {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
     using System.Linq;
@@ -34,6 +35,9 @@ namespace Abacus {
 
 		// static readonly BF PRIVATE = 
 		// 	BF.Instance | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
+
+		static readonly MethodInfo IN = WALKER_TYPE.GetMethod(
+				"__In", STAPRIVATE);
 
 		static readonly MethodInfo POW = WALKER_TYPE.GetMethod(
 				"__Pow", STAPRIVATE);
@@ -185,6 +189,20 @@ namespace Abacus {
 			return mi != null;
 		}
 
+		public Expression Walk(InExpression expr) {
+			var item = expr.Item.Accept(this);
+			var opts = expr.Opts.Accept(this);
+
+			if (item.Type != typeof(object))
+				item = Convert(item, typeof(object));
+
+			if (opts.Type != typeof(object))
+				opts = Convert(opts, typeof(object));
+
+			return Call(null, IN, item, opts);
+		}
+
+
 		public Expression Walk(ArrayExpression arr) {
 			var items = new Expression[arr.Items.Length];
 			for(int i=0; i < arr.Items.Length; ++i) {
@@ -273,6 +291,21 @@ namespace Abacus {
 		static double __Trunc(double num, double div)
 			=> Math.Truncate(num/div);
 
+		static bool __In(object item, object opts) {
+			var @enum = opts as IEnumerable;
+			DieIf(@enum == null, "opts must be enumerable");
+
+			var e = @enum.GetEnumerator();
+			while(e.MoveNext()) {
+				if (item == null && e.Current == null)
+					return true;
+
+				if (item != null && item.Equals(e.Current))
+					return true;
+			}
+			// opts must be enumerable
+			return false;
+		}
 
 
 		static object __GetLocal(

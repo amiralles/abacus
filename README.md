@@ -134,7 +134,7 @@ tbl.Reduce("Customer='amiralles'");
 tbl.Reduce("Customer='amiralles' and Amount >= 200");
 
 // This will give us all pipex's and vilmis's purchases combined.
-tbl.Reduce("Customer='pipex' or Customer='vilmis');
+tbl.Reduce("Customer='pipex' or Customer='vilmis'");
 
 // So far so good, now let's use some variables. From here, abacus is somewhat
 // special compared to sql expressions becasue it gives you more flexibility.

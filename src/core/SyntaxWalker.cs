@@ -368,6 +368,9 @@ namespace Abacus {
 		static int __Cmp(object lhs, object rhs) {
 			DbgPrintCmp(lhs, rhs);
 
+			if (lhs is DBNull) return rhs is DBNull ? 0 : -1;
+			if (rhs is DBNull) return lhs is DBNull ? 0 : 1;
+
 			// As of now, strings are the only "special case" for comparisons,
 			// all the other types are converted to number and then compared
 			// to each other.

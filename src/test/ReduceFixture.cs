@@ -16,6 +16,20 @@ namespace Abacus.Test {
 
 	class ReduceFixture {
 
+		// Cmps using dbnulls.
+		_ reduce_data_table_dbnull = assert => {
+			var tbl = new DataTable();
+			tbl.Columns.Add("Price", typeof(double));
+			var row = tbl.NewRow();
+			row["Price"]  = System.DBNull.Value;
+			tbl.Rows.Add(row);
+
+			var red = tbl.Reduce("Price >= 5");
+			red = tbl.Reduce("5 >= Price");
+
+			assert.Pass();
+		};
+
 		//TODO: Add hook for client func calls.
 		_ reduce_data_table = assert => {
 			var tbl = new DataTable();

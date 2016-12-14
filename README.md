@@ -191,6 +191,3 @@ tbl.Reduce("SalesRep = curr_usr", locNames, locValues);
 	//TODO:
 ```
 
-
-### Important
-Abacus is not working yet, stay tuned!

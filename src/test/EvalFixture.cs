@@ -427,6 +427,12 @@ namespace Abacus.Test {
 			assert.Equal("hello world", res);
 		};
 
+
+        _ paren_expressions = assert => {
+            var res = Eval("(2 + 2) * 3");
+            assert.Equal(12d, res);
+        };
+
 		// TODO: Doc how to use it.
 		// TODO: Op presedence
 		// TODO: Stress tests.

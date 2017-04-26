@@ -221,6 +221,9 @@ namespace Abacus {
 			return val;
 		}
 
+        public Expression Walk(ParenExpression pe)
+			=> pe.Expr.Accept(this);
+
         public Expression Walk(Const expr)
 			=> Constant(expr.Val, expr.Type);
 

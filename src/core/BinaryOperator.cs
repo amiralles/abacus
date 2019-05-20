@@ -1,6 +1,13 @@
 namespace Abacus {
-
+    using System;
+    using System.Globalization;
 	using BinOp = Abacus.BinaryOperator;
+
+    public class ConvertUtils { 
+        public static Func<string, string, CultureInfo, DateTime> Str2Date = 
+            (str, fmt, ci) => 
+				DateTime.ParseExact(str, fmt, ci);
+    }
 
     public struct BinaryOperator {
 

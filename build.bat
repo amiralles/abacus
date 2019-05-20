@@ -2,7 +2,8 @@ echo off
 cls
 
 rem lib
-csc .\src\core\*.cs /t:library /out:.\bin\abacus.dll /r:System.Data.dll
+csc .\src\core\*.cs /t:library /out:.\bin\abacus.dll /r:System.Data.dll ^
+	-debug -pdb:.\bin\abacus
 
 
 rem tests

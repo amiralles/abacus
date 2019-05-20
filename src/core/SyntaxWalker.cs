@@ -4,6 +4,7 @@ namespace Abacus {
     using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.Globalization;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Reflection;
@@ -23,6 +24,8 @@ namespace Abacus {
     public class SyntaxWalker {
 		static readonly Type WALKER_TYPE = typeof(SyntaxWalker);
 		static readonly Type INTER_TYPE  = typeof(Interpreter);
+        static readonly CultureInfo DATE_CI = CultureInfo.InvariantCulture;
+        const string DATE_FMT = "yyyy-MM-dd";
 
 		static readonly BF STAPRIVATE = 
 			BF.Static | BF.NonPublic | BF.InvokeMethod | BF.DeclaredOnly;
@@ -396,8 +399,12 @@ namespace Abacus {
 			}
 			// ===============================================================
 
-			if (lhs is DateTime)
+			if (lhs is DateTime) {
 				lhs = ((DateTime)lhs).ToOADate();
+                if (rhs is string) { //<- cmp date, date(str))
+                    rhs = ConvertUtils.Str2Date((string) rhs, DATE_FMT, DATE_CI);
+                }
+            }
 
 			if (rhs is DateTime)
 				rhs = ((DateTime)rhs).ToOADate();
